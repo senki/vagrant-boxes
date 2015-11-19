@@ -26,7 +26,7 @@
 #  $ vagrant provision
 # From the host machine
 
-HOST_NAME="provision-test.local"
+HOST_NAME="vagrant-lamp-base.local"
 # APACHE_CONFIG_FILE="/etc/apache2/envvars"
 # PHP_CONFIG_FILE="/etc/php5/apache2/php.ini"
 # MYSQL_CONFIG_FILE="/etc/mysql/my.cnf"
