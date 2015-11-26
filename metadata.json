@@ -1,0 +1,15 @@
+{
+    "name": "senki/trusty64",
+    "description": "Ubuntu Trusty x64 LAMP Dev Environment with PHP v5.5 & PHPMyAdmin",
+    "short_description": "Trusty LAMP PHP v5.5 Dev Environment",
+    "versions": [{
+        "version": "1.0.0",
+        "status": "active",
+        "description_html": "<p>Created on 2015.11.26</p>",
+        "description_markdown": "Created on 2015.11.26",
+        "providers": [{
+            "name": "virtualbox",
+            "url": "package.box"
+        }]
+    }]
+}
