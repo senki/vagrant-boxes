@@ -26,15 +26,14 @@
 #  $ vagrant provision
 # From the host machine
 
-HOST_NAME="vagrant-lamp-base.local"
+HOST_NAME="lamp-base-php55.local"
 # APACHE_CONFIG_FILE="/etc/apache2/envvars"
 # PHP_CONFIG_FILE="/etc/php5/apache2/php.ini"
 # MYSQL_CONFIG_FILE="/etc/mysql/my.cnf"
 WWW_ROOT="/var/www/html"
 MYSQL_ROOT_PASS="vagrant"
-PHPMYADMIN_APP_PASS="B3izaoDTISRFu2C"
+PHPMYADMIN_APP_PASS="vagrant"
 PROVISION_LOG="/var/log/provision.log"
-PHP_VERS="5.4.45"
 
 do_prepare() {
     if [ -f "/var/lock/provision-prepare" ]; then
@@ -42,8 +41,6 @@ do_prepare() {
         return
     fi
     echo -e "Preparing environment...\n" | tee -a $PROVISION_LOG
-    # remove tty warning
-    sed -i "s/^mesg n$/tty -s \&\& mesg n/g" /root/.profile
     # set timezone
     echo "Europe/Budapest" > /etc/timezone
     dpkg-reconfigure -f noninteractive tzdata >> $PROVISION_LOG 2>&1
@@ -93,11 +90,22 @@ do_install_lamp() {
     debconf-set-selections <<< "mysql-server mysql-server/root_password password $MYSQL_ROOT_PASS"
     debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $MYSQL_ROOT_PASS"
     tasksel install lamp-server
-    apt-get -y install php5-curl php5-mcrypt libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
-    php5enmod mcrypt
     a2enmod rewrite >> $PROVISION_LOG 2>&1
     service apache2 restart >> $PROVISION_LOG 2>&1
     touch /var/lock/provision-install-lamp
+    echo -e "\n" >> $PROVISION_LOG 2>&1
+}
+
+do_install_php() {
+    if [ -f "/var/lock/provision-install-php" ]; then
+        echo -e "Skipping: PHP Extensions already installed\n"  | tee -a $PROVISION_LOG
+        return
+    fi
+    echo -e "Installing PHP Extensions...\n"  | tee -a $PROVISION_LOG
+    apt-get -y install php5-curl php5-mcrypt libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
+    php5enmod mcrypt
+    service apache2 restart >> $PROVISION_LOG 2>&1
+    touch /var/lock/provision-install-php
     echo -e "\n" >> $PROVISION_LOG 2>&1
 }
 
@@ -107,42 +115,11 @@ do_files() {
         return
     fi
     echo -e "Setting up WWW files...\n" | tee -a $PROVISION_LOG
+    service apache2 stop >> $PROVISION_LOG 2>&1
     rm -rf $WWW_ROOT
     ln -fs /vagrant/src $WWW_ROOT
-    service apache2 restart >> $PROVISION_LOG 2>&1
+    service apache2 start >> $PROVISION_LOG 2>&1
     touch /var/lock/provision-files
-    echo -e "\n" >> $PROVISION_LOG 2>&1
-}
-
-do_install_php() {
-    if [ -f "/var/lock/provision-install-php" ]; then
-        echo -e "Skipping: PHP v$PHP_VERS already installed\n"  | tee -a $PROVISION_LOG
-        return
-    fi
-    echo -e "Installing PHP v$PHP_VERS via PHPBrew...\n"  | tee -a $PROVISION_LOG
-    apt-get -y build-dep php5 >> $PROVISION_LOG 2>&1
-    apt-get -y install php5 php5-dev php-pear autoconf automake curl build-essential libxslt1-dev re2c libxml2 libxml2-dev php5-cli bison libbz2-dev libreadline-dev libicu-dev >> $PROVISION_LOG 2>&1
-    apt-get -y install mysql-server mysql-client libmysqlclient-dev libmysqld-dev >> $PROVISION_LOG 2>&1
-    curl -s -L -O https://github.com/phpbrew/phpbrew/raw/master/phpbrew >> $PROVISION_LOG 2>&1
-    chmod +x phpbrew
-    mv phpbrew /usr/local/bin/phpbrew
-    phpbrew init >> $PROVISION_LOG 2>&1
-    source /root/.phpbrew/bashrc
-    echo "source /root/.phpbrew/bashrc" >> /root/.bashrc
-    phpbrew lookup-prefix ubuntu >> $PROVISION_LOG 2>&1
-    phpbrew known >> $PROVISION_LOG 2>&1
-    phpbrew install php-$PHP_VERS +default +mysql +intl +iconv +gettext +apxs2=/usr/bin/apxs2 \
-            -- --with-libdir=lib/x86_64-linux-gnu \
-               --with-gd=shared \
-               --enable-gd-natf \
-               --with-jpeg-dir=/usr \
-               --with-png-dir=/usr >> $PROVISION_LOG 2>&1
-    phpbrew switch $PHP_VERS
-    phpbrew ext install gd >> $PROVISION_LOG 2>&1
-    phpbrew ext enable gd >> $PROVISION_LOG 2>&1
-    sed -i "s/^\;session.save_path = \"\/tmp\"$/session.save_path = \"\/tmp\"/g" /root/.phpbrew/php/php-5.4.45/etc/php.ini
-    service apache2 restart >> $PROVISION_LOG 2>&1
-    touch /var/lock/provision-install-php
     echo -e "\n" >> $PROVISION_LOG 2>&1
 }
 
@@ -179,6 +156,8 @@ do_install_utilities() {
     rm v6.3.tar.gz
     cd multitail-6.3 && make install  >> $PROVISION_LOG 2>&1 && cd ..
     rm -rf multitail-6.3
+    cp /etc/multitail.conf.new /etc/multitail.conf
+    sed -i "s/^xclip:\/usr\/bin\/xclip$/\# xclip:\/usr\/bin\/xclip/g" /etc/multitail.conf
     touch /var/lock/provision-install-utilities
     echo -e "\n" >> $PROVISION_LOG 2>&1
 }
@@ -194,8 +173,8 @@ do_prepare
 do_update
 do_network
 do_install_lamp
-do_files
 do_install_php
+do_files
 do_install_phpmyadmin
 do_install_utilities
 
