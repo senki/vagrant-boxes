@@ -5,6 +5,16 @@
 #
 # The MIT License (MIT)
 
+def local_cache(box_name)
+  cache_dir = File.join(File.expand_path("~/.vagrant.d"),
+                        'cache',
+                        'apt',
+                        box_name)
+  partial_dir = File.join(cache_dir, 'partial')
+  FileUtils.mkdir_p(partial_dir) unless File.exists? partial_dir
+  cache_dir
+end
+
 Vagrant.configure(2) do |config|
 
   config.vm.define "precise" do |precise|
@@ -12,6 +22,8 @@ Vagrant.configure(2) do |config|
     precise.vm.hostname = "lamp-precise.local"
     precise.vm.network "private_network", ip:"192.168.33.14"
     precise.vm.provision "shell", path: "src/precise.sh"
+    cache_dir = local_cache(precise.vm.box)
+    precise.vm.synced_folder cache_dir, "/var/cache/apt/archives/"
   end
 
   config.vm.define "trusty" do |trusty|
@@ -19,6 +31,8 @@ Vagrant.configure(2) do |config|
     trusty.vm.hostname = "lamp-trusty.local"
     trusty.vm.network "private_network", ip:"192.168.33.15"
     trusty.vm.provision "shell", path: "src/trusty.sh"
+    cache_dir = local_cache(trusty.vm.box)
+    trusty.vm.synced_folder cache_dir, "/var/cache/apt/archives/"
   end
 
 end
