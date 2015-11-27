@@ -1,7 +1,15 @@
-# lamp-base-php55
-Basic LAMP Vagrant machine with PHP v5.5
+# vagrant-lamp-base
+Basic LAMP Vagrant machines.  
+Currently only with VirtualBox provider.
 
-## Included SW
+## senki/precise64
+- Ubuntu Precise x64 (12.04 LTS)
+- Apache 2.2.22 
+- MySQL 5.5.46
+- PHP  5.4.45
+- PHPMyAdmin 4.2.3
+
+## senki/trusty64
 - Ubuntu Trusty x64 (14.04 LTS)
 - Apache 2.4.7 
 - MySQL 5.5.46
@@ -11,19 +19,18 @@ Basic LAMP Vagrant machine with PHP v5.5
 ## Usage
 1. Download/clone repository
 2. `cd` to folder
-3. type `vagrant up` (wait for virtual machine completely booted/provisioned)
-4. go to [192.168.33.15](http://192.168.33.15)  
-5. Enjoy!
-
-## Deploy to your vagrant as new box 
-Run `./deploy.sh`. (Thats it!) :)
+3. type `build.sh` ...wait for it
+4. You have a `senki/precise64` & `senki/trusty64` machine imported to vagrant
+5. check with `vagrant box list`
 
 ## Pre-requirements on OS X
-- git (via homebrew: `brew install git`)
+- git (recommended via homebrew: `brew install git`)
     - [homebrew](http://brew.sh)
-    - [SourceTree](https://www.sourcetreeapp.com) (optional)
+    - [SourceTree](https://www.sourcetreeapp.com) (optional GUI for git)
 - [Vagrant](https://www.vagrantup.com)
     - [vagrant-reload](https://github.com/aidanns/vagrant-reload)
     - [vagrant-vbguest](https://github.com/dotless-de/vagrant-vbguest)  
     - [VirtualBox](https://www.virtualbox.org)
 
+Copyright (c) 2015 Csaba Maulis  
+The MIT License (MIT)

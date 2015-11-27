@@ -1,15 +1,15 @@
 {
-    "name": "senki/trusty64",
+    "name": "senki/precise64",
     "description": "Ubuntu Trusty x64 LAMP Dev Environment with PHP v5.5 & PHPMyAdmin",
     "short_description": "Trusty LAMP PHP v5.5 Dev Environment",
     "versions": [{
         "version": "1.0.0",
         "status": "active",
-        "description_html": "<p>Created on 2015.11.26</p>",
-        "description_markdown": "Created on 2015.11.26",
+        "description_html": "<p>Based on ubuntu/precise64 20151119.0.0</p>",
+        "description_markdown": "Based on ubuntu/precise64 20151119.0.0",
         "providers": [{
             "name": "virtualbox",
-            "url": "package.box"
+            "url": "dist/precise.box"
         }]
     }]
 }
