@@ -4,7 +4,7 @@
 #
 # The MIT License (MIT)
 
-# To re-run full provisioning, delete /var/lock/provision-* files and run
+# To re-run full provisioning, delete /var/provision/* files and run
 #  $ vagrant provision
 # From the host machine
 
@@ -19,7 +19,7 @@ PHPMYADMIN_APP_PASS="vagrant"
 PROVISION_LOG="/var/log/provision.log"
 
 do_prepare() {
-    if [ -f "/var/lock/provision-prepare" ]; then
+    if [ -f "/var/provision/prepare" ]; then
         echo -e "Skipping: Environment already prepared\n" | tee -a $PROVISION_LOG
         return
     fi
@@ -34,24 +34,24 @@ do_prepare() {
     echo 'LC_ALL="en_US.UTF-8"' >> $LOCALE_CONFIG
     # ssh loce not accept from client
     sed -i "s/^AcceptEnv LANG LC_\*$/\# AcceptEnv LANG LC_\*/g" $SSHD_CONFIG
-    touch /var/lock/provision-prepare
+    touch /var/provision/prepare
     echo -e "\n" >> $PROVISION_LOG 2>&1
 }
 
 do_update() {
-    if [ -f "/var/lock/provision-update" ] && [ `stat --format=%Y /var/lock/provision-update` -ge $(( `date +%s` - (60*60*24) )) ]; then
+    if [ -f "/var/provision/update" ] && [ `stat --format=%Y /var/provision/update` -ge $(( `date +%s` - (60*60*24) )) ]; then
         echo -e "Skipping: System already updated within a day\n" | tee -a $PROVISION_LOG
         return
     fi
     echo -e "Updating System...\n"  | tee -a $PROVISION_LOG
     apt-get update >> $PROVISION_LOG 2>&1
     apt-get -y dist-upgrade >> $PROVISION_LOG 2>&1
-    touch /var/lock/provision-update
+    touch /var/provision/update
     echo -e "\n" >> $PROVISION_LOG 2>&1
 }
 
 do_network() {
-    if [ -f "/var/lock/provision-network" ]; then
+    if [ -f "/var/provision/network" ]; then
         echo -e "Skipping: Hostname already confugured\n" | tee -a $PROVISION_LOG
         return
     fi
@@ -59,12 +59,12 @@ do_network() {
     IPADDR=$(/sbin/ifconfig eth1 | awk '/inet / { print $2 }' | sed 's/addr://')
     sed -i "s/^${IPADDR}.*//" $HOST_CONFIG
     echo ${IPADDR} ${HOST_NAME} >> $HOST_CONFIG           # Just to quiet down some error messages
-    touch /var/lock/provision-network
+    touch /var/provision/network
     echo -e "\n" >> $PROVISION_LOG 2>&1
 }
 
 do_install_lamp() {
-    if [ -f "/var/lock/provision-install-lamp" ]; then
+    if [ -f "/var/provision/install-lamp" ]; then
         echo -e "Skipping: LAMP Stack already installed\n" | tee -a $PROVISION_LOG
         return
     fi
@@ -75,12 +75,12 @@ do_install_lamp() {
     tasksel install lamp-server
     a2enmod rewrite >> $PROVISION_LOG 2>&1
     service apache2 restart >> $PROVISION_LOG 2>&1
-    touch /var/lock/provision-install-lamp
+    touch /var/provision/install-lamp
     echo -e "\n" >> $PROVISION_LOG 2>&1
 }
 
 do_files() {
-    if [ -f "/var/lock/provision-files" ]; then
+    if [ -f "/var/provision/files" ]; then
         echo -e "Skipping: WWW files already in place...\n" | tee -a $PROVISION_LOG
         return
     fi
@@ -89,12 +89,12 @@ do_files() {
     rm -rf $WWW_ROOT
     ln -fs /vagrant/wwwroot $WWW_ROOT
     service apache2 start >> $PROVISION_LOG 2>&1
-    touch /var/lock/provision-files
+    touch /var/provision/files
     echo -e "\n" >> $PROVISION_LOG 2>&1
 }
 
 do_install_phpmyadmin() {
-    if [ -f "/var/lock/provision-install-phpmyadmin" ]; then
+    if [ -f "/var/provision/install-phpmyadmin" ]; then
         echo -e "Skipping: phpMyAdmin already installed\n" | tee -a $PROVISION_LOG
         return
     fi
@@ -109,12 +109,12 @@ do_install_phpmyadmin() {
     debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password $PHPMYADMIN_APP_PASS"
     debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password $PHPMYADMIN_APP_PASS"
     apt-get -y install phpmyadmin >> $PROVISION_LOG 2>&1
-    touch /var/lock/provision-install-phpmyadmin
+    touch /var/provision/install-phpmyadmin
     echo -e "\n" >> $PROVISION_LOG 2>&1
 }
 
 do_install_utilities() {
-    if [ -f "/var/lock/provision-install-utilities" ]; then
+    if [ -f "/var/provision/install-utilities" ]; then
         echo -e "Skipping: Utility softwares already installed\n" | tee -a $PROVISION_LOG
         return
     fi
@@ -128,7 +128,7 @@ do_install_utilities() {
     rm -rf multitail-6.3
     cp /etc/multitail.conf.new $MULTITAIL_CONFIG
     sed -i "s/^xclip:\/usr\/bin\/xclip$/\# xclip:\/usr\/bin\/xclip/g" $MULTITAIL_CONFIG
-    touch /var/lock/provision-install-utilities
+    touch /var/provision/install-utilities
     echo -e "\n" >> $PROVISION_LOG 2>&1
 }
 
@@ -138,6 +138,9 @@ main() {
     fi
     echo -e "\n" >> $PROVISION_LOG 2>&1
     echo -e "$(date): Provisioning start\n" >> $PROVISION_LOG 2>&1
+    if [ ! -d "/var/provision" ]; then
+        mkdir /var/provision
+    fi
     do_prepare
     do_update
     do_network

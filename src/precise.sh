@@ -4,15 +4,15 @@
 #
 # The MIT License (MIT)
 
-# To re-run full provisioning, delete /var/lock/provision-* files and run
-#  $ vagrant provision
+# To re-run full provisioning, delete /var/provision/* files and run
+#  $ vagrant provision precise --provision-with shell
 # From the host machine
 
 HOST_NAME="lamp-precise.local"
 WWW_ROOT="/var/www"
 
 do_install_php() {
-    if [ -f "/var/lock/provision-install-php" ]; then
+    if [ -f "/var/provision/install-php" ]; then
         echo -e "Skipping: PHP v5.4 already installed\n"  | tee -a $PROVISION_LOG
         return
     fi
@@ -22,7 +22,7 @@ do_install_php() {
     apt-get -y install php5-curl php5-mcrypt libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
     php5enmod mcrypt
     service apache2 restart >> $PROVISION_LOG 2>&1
-    touch /var/lock/provision-install-php
+    touch /var/provision/install-php
     echo -e "\n" >> $PROVISION_LOG 2>&1
 }
 
