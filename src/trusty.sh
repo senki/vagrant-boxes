@@ -24,7 +24,7 @@ do_install_php() {
     echo -e "\n" >> $PROVISION_LOG 2>&1
 }
 
-source common/*.sh
+source /vagrant/src/common.sh
 
 # Script start here
 main
