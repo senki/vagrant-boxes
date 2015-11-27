@@ -46,6 +46,7 @@ do_update() {
     echo -e "Updating System...\n"  | tee -a $PROVISION_LOG
     apt-get update >> $PROVISION_LOG 2>&1
     apt-get -y dist-upgrade >> $PROVISION_LOG 2>&1
+    apt-get -y autoremove >> $PROVISION_LOG 2>&1
     touch /var/provision/update
     echo -e "\n" >> $PROVISION_LOG 2>&1
 }
