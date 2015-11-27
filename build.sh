@@ -13,8 +13,7 @@ do_build() {
         then
         rm dist/${BOX_NAME}.box
     fi
-    vagrant up ${BOX_NAME}
-    vagrant provision ${BOX_NAME}
+    vagrant up ${BOX_NAME} --provision
     vagrant package ${BOX_NAME} --output dist/${BOX_NAME}.box
     vagrant box add src/${BOX_NAME}.json
     rm dist/${BOX_NAME}.box

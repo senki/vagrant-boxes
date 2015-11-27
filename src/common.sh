@@ -124,7 +124,7 @@ do_install_utilities() {
     curl -s -L -O https://github.com/flok99/multitail/archive/v6.3.tar.gz >> $PROVISION_LOG 2>&1
     tar xzf v6.3.tar.gz
     rm v6.3.tar.gz
-    cd multitail-6.3 && make install  >> $PROVISION_LOG 2>&1 && cd ..
+    cd multitail-6.3 && make install >> $PROVISION_LOG 2>&1 && cd ..
     rm -rf multitail-6.3
     cp /etc/multitail.conf.new $MULTITAIL_CONFIG
     sed -i "s/^xclip:\/usr\/bin\/xclip$/\# xclip:\/usr\/bin\/xclip/g" $MULTITAIL_CONFIG
@@ -149,7 +149,9 @@ main() {
     do_files
     do_install_phpmyadmin
     do_install_utilities
-
+    if [ -f /var/run/reboot-required ]; then
+        reboot >> $PROVISION_LOG 2>&1
+    fi
     echo -e "All done"
     echo -e "$(date): Provisioning done\n" >> $PROVISION_LOG 2>&1
 }
