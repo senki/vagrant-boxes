@@ -1,5 +1,5 @@
 {
-    "name": "senki/precise64",
+    "name": "senki/trusty64",
     "description": "Ubuntu Trusty x64 LAMP Dev Environment with PHP v5.5 & PHPMyAdmin",
     "short_description": "Trusty LAMP PHP v5.5 Dev Environment",
     "versions": [{
