@@ -19,9 +19,8 @@ do_install_php() {
         return
     fi
     echo -e "Installing PHP Extensions...\n"  | tee -a $PROVISION_LOG
-    apt-get -y install php5-curl php5-mcrypt libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
+    apt-get -y install php5 php5-curl php5-mcrypt libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
     php5enmod mcrypt
-    service apache2 restart >> $PROVISION_LOG 2>&1
     touch /var/provision/install-php
     echo -e "\n" >> $PROVISION_LOG 2>&1
 }
