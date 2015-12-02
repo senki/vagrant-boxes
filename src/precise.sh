@@ -19,9 +19,9 @@ do_install_php() {
     echo -e "Installing PHP v5.4...\n"  | tee -a $PROVISION_LOG
     add-apt-repository -y ppa:ondrej/php5-oldstable >> $PROVISION_LOG 2>&1
     apt-get update >> $PROVISION_LOG 2>&1
-    apt-get -y install php5-curl php5-mcrypt libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
+    apt-get -y install php5 php5-curl php5-mcrypt libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
+    apt-get -y dist-upgrade >> $PROVISION_LOG 2>&1
     php5enmod mcrypt
-    service apache2 restart >> $PROVISION_LOG 2>&1
     touch /var/provision/install-php
     echo -e "\n" >> $PROVISION_LOG 2>&1
 }

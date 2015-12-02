@@ -149,8 +149,8 @@ main() {
     if [[ "$1" -eq "test" ]]; then
         do_network
     fi
-    do_install_lamp
     do_install_php
+    do_install_lamp
     if [[ "$1" -eq "test" ]]; then
         do_files
     fi
