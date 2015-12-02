@@ -49,12 +49,12 @@ if [ $1 == "all" ]
     do_build
 elif [ $1 == "precise" ]
   then
-    echo "    Building 'precise' vagrant box"
+    echo "    Building Ubuntu 12.04 TLS x64 'Precise' vagrant box"
     BOX_NAME="precise"
     do_build
 elif [ $1 == "trusty" ]
     then
-    echo "    Building 'trusty' vagrant box"
+    echo "    Building Ubuntu 14.04 TLS x64 'Trusty' vagrant box"
     BOX_NAME="trusty"
     do_build
 else
