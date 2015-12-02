@@ -5,7 +5,7 @@
 # SEE LICENSE File
 
 # To re-run full provisioning, delete /var/provision/* files and run
-#  $ vagrant provision precise --provision-with shell
+#  $ vagrant provision precise
 # From the host machine
 
 HOST_NAME="lamp-precise.local"
