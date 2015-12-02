@@ -32,4 +32,4 @@ Currently only with VirtualBox provider.
     - [VirtualBox](https://www.virtualbox.org)
 
 Copyright (c) 2015 Csaba Maulis  
-The MIT License (MIT)
+Licence: [MIT License](LICENSE)

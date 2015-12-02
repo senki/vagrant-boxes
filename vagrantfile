@@ -3,7 +3,7 @@
 
 # Copyright (c) 2015 Csaba Maulis
 #
-# The MIT License (MIT)
+# SEE LICENSE File
 
 def local_cache(box_name)
   cache_dir = File.join(File.expand_path("~/.vagrant.d"),

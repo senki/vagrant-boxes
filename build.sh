@@ -2,7 +2,7 @@
 
 # Copyright (c) 2015 Csaba Maulis
 #
-# The MIT License (MIT)
+# SEE LICENSE File
 
 do_build() {
     if [ ! -d "dist" ]

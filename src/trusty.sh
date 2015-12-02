@@ -2,7 +2,7 @@
 
 # Copyright (c) 2015 Csaba Maulis
 #
-# The MIT License (MIT)
+# SEE LICENSE File
 
 # To re-run full provisioning, delete /var/provision/* files and run
 #  $ vagrant provision trusty --provision-with shell
