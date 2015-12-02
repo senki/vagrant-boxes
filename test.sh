@@ -14,7 +14,6 @@ do_test() {
     vagrant destroy ${BOX_NAME}_test -f
     echo -e "${GREEN}Building ubuntu ${BOX_NAME} tls x64 test box${NC}"
     vagrant up ${BOX_NAME}_test --provision
-    vagrant reload ${BOX_NAME}_test
     open "http://lamp-${BOX_NAME}-test.local"
 }
 

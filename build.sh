@@ -23,7 +23,7 @@ do_build() {
     vagrant package ${BOX_NAME} --output dist/${BOX_NAME}.box
     vagrant box add src/${BOX_NAME}.json
     rm dist/${BOX_NAME}.box
-    vagrant destroy -f
+    vagrant destroy ${BOX_NAME} -f
 }
 
 do_help() {
