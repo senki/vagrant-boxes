@@ -24,6 +24,8 @@ do_prepare() {
         return
     fi
     echo -e "Preparing environment...\n" | tee -a $PROVISION_LOG
+    # remove tty warning
+    sed -i "s/^mesg n$/tty -s \&\& mesg n/g" /root/.profile
     # set timezone
     echo "Europe/Budapest" > $TIMEZONE_CONFIG
     dpkg-reconfigure -f noninteractive tzdata >> $PROVISION_LOG 2>&1
