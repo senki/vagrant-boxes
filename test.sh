@@ -56,4 +56,4 @@ else
     do_help
     exit
 fi
-echo -e "${GREEN}Done${NC}"
+echo -e "${GREEN}test.sh done${NC}"

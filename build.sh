@@ -10,7 +10,7 @@ GREEN='\033[1;32m'
 NC="\033[0m"
 
 do_build() {
-    echo -e "${GREEN}Building ubuntu ${BOX_NAME} tls x64 test box${NC}"
+    echo -e "${GREEN}Building ubuntu ${BOX_NAME} tls x64 vagrant box${NC}"
     if [ ! -d "dist" ]
         then
         mkdir dist
@@ -62,4 +62,4 @@ else
     do_help
     exit
 fi
-echo -e "${GREEN}Done${NC}"
+echo -e "${GREEN}build.sh done${NC}"

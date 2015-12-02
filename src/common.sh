@@ -23,7 +23,7 @@ do_prepare() {
         echo -e "Skipping: Environment already prepared\n" | tee -a $PROVISION_LOG
         return
     fi
-    echo -e "Preparing environment...\n" | tee -a $PROVISION_LOG
+    echo -e "Preparing Environment...\n" | tee -a $PROVISION_LOG
     # remove tty warning
     sed -i "s/^mesg n$/tty -s \&\& mesg n/g" /root/.profile
     # set timezone
@@ -55,10 +55,10 @@ do_update() {
 
 do_network() {
     if [ -f "/var/provision/network" ]; then
-        echo -e "Skipping: Hostname already confugured\n" | tee -a $PROVISION_LOG
+        echo -e "Skipping: Network already confugured\n" | tee -a $PROVISION_LOG
         return
     fi
-    echo -e "Configuring hostname...\n"  | tee -a $PROVISION_LOG
+    echo -e "Configuring Network...\n"  | tee -a $PROVISION_LOG
     IPADDR=$(/sbin/ifconfig eth1 | awk '/inet / { print $2 }' | sed 's/addr://')
     sed -i "s/^${IPADDR}.*//" $HOST_CONFIG
     echo ${IPADDR} ${HOST_NAME} >> $HOST_CONFIG           # Just to quiet down some error messages
@@ -72,7 +72,7 @@ do_install_lamp() {
         return
     fi
     export DEBIAN_FRONTEND=noninteractive
-    echo -e "Installing & Configuring LAMP Stack...\n"  | tee -a $PROVISION_LOG
+    echo -e "Installing LAMP Stack...\n"  | tee -a $PROVISION_LOG
     debconf-set-selections <<< "mysql-server mysql-server/root_password password $MYSQL_ROOT_PASS"
     debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $MYSQL_ROOT_PASS"
     tasksel install lamp-server
