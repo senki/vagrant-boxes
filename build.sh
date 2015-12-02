@@ -4,7 +4,13 @@
 #
 # SEE LICENSE File
 
+set -e
+
+GREEN='\033[1;32m'
+NC="\033[0m"
+
 do_build() {
+    echo -e "${GREEN}Building ubuntu ${BOX_NAME} tls x64 test box${NC}"
     if [ ! -d "dist" ]
         then
         mkdir dist
@@ -32,8 +38,6 @@ do_help() {
     echo ""
 }
 
-set -e
-
 if [ $# -eq 0 ]
   then
     do_help
@@ -42,21 +46,20 @@ fi
 
 if [ $1 == "all" ]
   then
-    echo "    Building all vagrant boxes"
     BOX_NAME="precise"
     do_build
     BOX_NAME="trusty"
     do_build
 elif [ $1 == "precise" ]
   then
-    echo "    Building Ubuntu 12.04 TLS x64 'Precise' vagrant box"
     BOX_NAME="precise"
     do_build
 elif [ $1 == "trusty" ]
     then
-    echo "    Building Ubuntu 14.04 TLS x64 'Trusty' vagrant box"
     BOX_NAME="trusty"
     do_build
 else
     do_help
+    exit
 fi
+echo -e "${GREEN}Done${NC}"

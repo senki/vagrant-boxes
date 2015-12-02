@@ -8,6 +8,8 @@
 #  $ vagrant provision trusty
 # From the host machine
 
+set -e
+
 HOST_NAME="lamp-trusty.local"
 WWW_ROOT="/var/www/html"
 

@@ -8,6 +8,8 @@
 #  $ vagrant provision precise
 # From the host machine
 
+set -e
+
 HOST_NAME="lamp-precise.local"
 WWW_ROOT="/var/www"
 

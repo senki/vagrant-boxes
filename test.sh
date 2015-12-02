@@ -10,9 +10,9 @@ GREEN='\033[1;32m'
 NC="\033[0m"
 
 do_test() {
-    echo -e "${GREEN}    Destroying previously ubuntu ${BOX_NAME} tls x64 test box - if any${NC}"
+    echo -e "${GREEN}Destroying previously ubuntu ${BOX_NAME} tls x64 test box - if any${NC}"
     vagrant destroy ${BOX_NAME}_test -f
-    echo -e "${GREEN}    Building ubuntu ${BOX_NAME} tls x64 test box${NC}"
+    echo -e "${GREEN}Building ubuntu ${BOX_NAME} tls x64 test box${NC}"
     vagrant up ${BOX_NAME}_test --provision
     vagrant reload ${BOX_NAME}_test
     open "http://lamp-${BOX_NAME}-test.local"
@@ -56,4 +56,4 @@ else
     do_help
     exit
 fi
-echo -e "${GREEN}    Done${NC}"
+echo -e "${GREEN}Done${NC}"
