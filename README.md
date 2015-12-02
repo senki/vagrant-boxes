@@ -17,11 +17,17 @@ Currently only with VirtualBox provider.
 - PHPMyAdmin 4.2.3
 
 ## Usage
-1. Download/clone repository
-2. `cd` to folder
-3. type `build.sh` ...wait for it
-4. You have a `senki/precise64` & `senki/trusty64` machine imported to vagrant
-5. check with `vagrant box list`
+- Download/clone repository
+- `cd` to folder
+
+### build
+1. type `build.sh` ...wait for finish
+2. You have a `senki/precise64` & `senki/trusty64` machine imported to vagrant
+3. check with `vagrant box list`
+
+### test
+1. type `test.sh` ...wait for finish
+2. You have a `lamp-precise-test.local` & `lamp-trusty-test-local` machine up & running
 
 ## Pre-requirements on OS X
 - git (recommended via homebrew: `brew install git`)

@@ -146,10 +146,14 @@ main() {
     fi
     do_prepare
     do_update
-    do_network
+    if [[ "$1" -eq "test" ]]; then
+        do_network
+    fi
     do_install_lamp
     do_install_php
-    do_files
+    if [[ "$1" -eq "test" ]]; then
+        do_files
+    fi
     do_install_phpmyadmin
     do_install_utilities
     if [ -f /var/run/reboot-required ]; then

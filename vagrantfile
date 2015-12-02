@@ -17,22 +17,44 @@ end
 
 Vagrant.configure(2) do |config|
 
+  # build
+
   config.vm.define "precise" do |precise|
+    precise.ssh.insert_key = false
     precise.vm.box = "ubuntu/precise64"
     precise.vm.hostname = "lamp-precise.local"
-    precise.vm.network "private_network", ip:"192.168.33.14"
     precise.vm.provision "shell", path: "src/precise.sh"
     cache_dir = local_cache(precise.vm.box)
     precise.vm.synced_folder cache_dir, "/var/cache/apt/archives/"
   end
 
   config.vm.define "trusty" do |trusty|
+    trusty.ssh.insert_key = false
     trusty.vm.box = "ubuntu/trusty64"
     trusty.vm.hostname = "lamp-trusty.local"
-    trusty.vm.network "private_network", ip:"192.168.33.15"
     trusty.vm.provision "shell", path: "src/trusty.sh"
     cache_dir = local_cache(trusty.vm.box)
     trusty.vm.synced_folder cache_dir, "/var/cache/apt/archives/"
+  end
+
+  # test
+
+  config.vm.define "precise_test" do |precise_test|
+    precise_test.vm.box = "ubuntu/precise64"
+    precise_test.vm.hostname = "lamp-precise-test.local"
+    precise_test.vm.network "private_network", ip:"192.168.33.14"
+    precise_test.vm.provision "shell", path: "src/precise.sh", args: "test"
+    cache_dir = local_cache(precise_test.vm.box)
+    precise_test.vm.synced_folder cache_dir, "/var/cache/apt/archives/"
+  end
+
+  config.vm.define "trusty_test" do |trusty_test|
+    trusty_test.vm.box = "ubuntu/trusty64"
+    trusty_test.vm.hostname = "lamp-trusty-test.local"
+    trusty_test.vm.network "private_network", ip:"192.168.33.15"
+    trusty_test.vm.provision "shell", path: "src/trusty.sh", args: "test"
+    cache_dir = local_cache(trusty_test.vm.box)
+    trusty_test.vm.synced_folder cache_dir, "/var/cache/apt/archives/"
   end
 
 end
