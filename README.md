@@ -34,6 +34,7 @@ Currently only with VirtualBox provider.
     - [homebrew](http://brew.sh)
     - [SourceTree](https://www.sourcetreeapp.com) (optional GUI for git)
 - [Vagrant](https://www.vagrantup.com)
+    - [vagrant-reload](https://github.com/aidanns/vagrant-reload)
     - [VirtualBox](https://www.virtualbox.org)
 
 ## version history
