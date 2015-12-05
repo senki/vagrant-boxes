@@ -146,7 +146,7 @@ main() {
         touch $PROVISION_LOG
     fi
     echo -e "\n" >> $PROVISION_LOG 2>&1
-    echo -e "$(date): Provisioning start\n" >> $PROVISION_LOG 2>&1
+    echo -e "Provisioning start at: $(date)\n" >> $PROVISION_LOG 2>&1
     if [ ! -d "/var/provision" ]; then
         mkdir /var/provision
     fi
@@ -164,5 +164,5 @@ main() {
     do_install_utilities
     updatedb >> $PROVISION_LOG 2>&1
     echo -e "All done"
-    echo -e "$(date): Provisioning done\n" >> $PROVISION_LOG 2>&1
+    echo -e "Provisioning done at: $(date)\n" >> $PROVISION_LOG 2>&1
 }
