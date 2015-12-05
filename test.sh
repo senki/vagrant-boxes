@@ -20,7 +20,7 @@ do_test() {
 do_help() {
     echo "Argument missing or invalid!"
     echo ""
-    echo "Usage: build.sh <subcommand>"
+    echo "Usage: test.sh <subcommand>"
     echo ""
     echo "Available subcommands:"
     echo "    all            Building all test boxes"
