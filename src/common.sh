@@ -18,6 +18,12 @@ MYSQL_ROOT_PASS="vagrant"
 PHPMYADMIN_APP_PASS="vagrant"
 PROVISION_LOG="/var/log/provision.log"
 
+if [ $# -ne 0 ]; then
+    SCRIPT_ARG=$1
+else
+    SCRIPT_ARG="prod" # anything but "test"
+fi
+
 do_prepare() {
     if [ -f "/var/provision/prepare" ]; then
         echo -e "Skipping: Environment already prepared\n" | tee -a $PROVISION_LOG
@@ -146,12 +152,13 @@ main() {
     fi
     do_prepare
     do_update
-    if [[ "$1" -eq "test" ]]; then
+    echo  $SCRIPT_ARG
+    if [ $SCRIPT_ARG == "test" ]; then
         do_network
     fi
     do_install_php
     do_install_lamp
-    if [[ "$1" -eq "test" ]]; then
+    if [ $SCRIPT_ARG == "test" ]; then
         do_files
     fi
     do_install_phpmyadmin
