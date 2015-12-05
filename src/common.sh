@@ -162,6 +162,7 @@ main() {
     fi
     do_install_phpmyadmin
     do_install_utilities
+    updatedb >> $PROVISION_LOG 2>&1
     if [ -f /var/run/reboot-required ]; then
         reboot >> $PROVISION_LOG 2>&1
     fi
