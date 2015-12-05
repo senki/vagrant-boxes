@@ -16,7 +16,7 @@ Currently only with VirtualBox provider.
 - PHP 5.5.9
 - PHPMyAdmin 4.2.3
 
-## Usage
+## usage
 - Download/clone repository
 - `cd` to folder
 
@@ -29,12 +29,17 @@ Currently only with VirtualBox provider.
 1. type `test.sh` ...wait for finish
 2. You have a `lamp-precise-test.local` & `lamp-trusty-test-local` machine up & running
 
-## Pre-requirements on OS X
+## pre-requirements on OS X
 - git (recommended via homebrew: `brew install git`)
     - [homebrew](http://brew.sh)
     - [SourceTree](https://www.sourcetreeapp.com) (optional GUI for git)
 - [Vagrant](https://www.vagrantup.com)
     - [VirtualBox](https://www.virtualbox.org)
+
+## version history
+- 1.0       initial release
+- 1.0.1     updated base boxes
+- 1.0.2     bugfix & updated base boxes
 
 Copyright (c) 2015 Csaba Maulis  
 Licence: [MIT License](LICENSE)
