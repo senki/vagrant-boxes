@@ -11,12 +11,10 @@ NC="\033[0m"
 
 do_build() {
     echo -e "${GREEN}Building ubuntu ${BOX_NAME} tls x64 vagrant box${NC}"
-    if [ ! -d "dist" ]
-        then
+    if [ ! -d "dist" ]; then
         mkdir dist
     fi
-    if [ -f "dist/${BOX_NAME}.box" ]
-        then
+    if [ -f "dist/${BOX_NAME}.box" ]; then
         rm dist/${BOX_NAME}.box
     fi
     vagrant up ${BOX_NAME} --provision
@@ -38,24 +36,20 @@ do_help() {
     echo ""
 }
 
-if [ $# -eq 0 ]
-  then
+if [ $# -eq 0 ]; then
     do_help
     exit
 fi
 
-if [ $1 == "all" ]
-  then
+if [ $1 == "all" ]; then
     BOX_NAME="precise"
     do_build
     BOX_NAME="trusty"
     do_build
-elif [ $1 == "precise" ]
-  then
+elif [ $1 == "precise" ]; then
     BOX_NAME="precise"
     do_build
-elif [ $1 == "trusty" ]
-    then
+elif [ $1 == "trusty" ]; then
     BOX_NAME="trusty"
     do_build
 else

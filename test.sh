@@ -31,24 +31,20 @@ do_help() {
 
 set -e
 
-if [ $# -eq 0 ]
-  then
+if [ $# -eq 0 ]; then
     do_help
     exit
 fi
 
-if [ $1 == "all" ]
-  then
+if [ $1 == "all" ]; then
     BOX_NAME="precise"
     do_test
     BOX_NAME="trusty"
     do_test
-elif [ $1 == "precise" ]
-  then
+elif [ $1 == "precise" ]; then
     BOX_NAME="precise"
     do_test
-elif [ $1 == "trusty" ]
-    then
+elif [ $1 == "trusty" ]; then
     BOX_NAME="trusty"
     do_test
 else
