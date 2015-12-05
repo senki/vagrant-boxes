@@ -152,7 +152,6 @@ main() {
     fi
     do_prepare
     do_update
-    echo  $SCRIPT_ARG
     if [ $SCRIPT_ARG == "test" ]; then
         do_network
     fi
