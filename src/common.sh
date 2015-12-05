@@ -13,6 +13,7 @@ LOCALE_CONFIG="/etc/default/locale"
 MULTITAIL_CONFIG="/etc/multitail.conf"
 SSHD_CONFIG="/etc/ssh/sshd_config"
 TIMEZONE_CONFIG="/etc/timezone"
+VBOX_GA_VERS="5.0.10"
 
 MYSQL_ROOT_PASS="vagrant"
 PHPMYADMIN_APP_PASS="vagrant"
@@ -43,6 +44,29 @@ do_prepare() {
     # ssh loce not accept from client
     sed -i "s/^AcceptEnv LANG LC_\*$/\# AcceptEnv LANG LC_\*/g" $SSHD_CONFIG
     touch /var/provision/prepare
+    echo -e "\n" >> $PROVISION_LOG 2>&1
+}
+
+do_install_vbox_ga() {
+    if [ -f "/var/provision/install-vbox_ga_$VBOX_GA_VERS" ]; then
+        echo -e "Skipping: VirtualBox Guest Additions v$VBOX_GA_VERS already installed\n" | tee -a $PROVISION_LOG
+        return
+    fi
+    echo -e "Installing VirtualBox Guest Additions v$VBOX_GA_VERS...\n" | tee -a $PROVISION_LOG
+    apt-get -y remove virtualbox-\* >> $PROVISION_LOG 2>&1
+    apt-get -y purge virtualbox-\* >> $PROVISION_LOG 2>&1
+    apt-get -y autoremove >> $PROVISION_LOG 2>&1
+    apt-get -y install build-essential linux-headers-generic dkms >> $PROVISION_LOG 2>&1
+    if [ ! -f "/vagrant/vbox_ga_$VBOX_GA_VERS.iso" ]; then
+        curl -s -L -o /vagrant/vbox_ga_$VBOX_GA_VERS.iso http://download.virtualbox.org/virtualbox/$VBOX_GA_VERS/VBoxGuestAdditions_$VBOX_GA_VERS.iso >> $PROVISION_LOG 2>&1
+    fi
+    mkdir /media/vbox_ga_$VBOX_GA_VERS
+    mount -o loop /vagrant/vbox_ga_$VBOX_GA_VERS.iso /media/vbox_ga_$VBOX_GA_VERS >> $PROVISION_LOG 2>&1
+    export REMOVE_INSTALLATION_DIR=0
+    sh /media/vbox_ga_$VBOX_GA_VERS/VBoxLinuxAdditions.run --nox11 >> $PROVISION_LOG 2>&1
+    umount /media/vbox_ga_$VBOX_GA_VERS >> $PROVISION_LOG 2>&1
+    rmdir /media/vbox_ga_$VBOX_GA_VERS
+    touch /var/provision/install-vbox_ga_$VBOX_GA_VERS
     echo -e "\n" >> $PROVISION_LOG 2>&1
 }
 
@@ -151,6 +175,7 @@ main() {
         mkdir /var/provision
     fi
     do_prepare
+    do_install_vbox_ga
     do_update
     if [ $SCRIPT_ARG == "test" ]; then
         do_network
