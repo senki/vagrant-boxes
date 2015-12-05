@@ -11,7 +11,7 @@
     <![endif]-->
 </head>
 <body>
-    <h1>Basic LAMP Vagrant machine with PHP v5.4.45</h1>
+    <h1>Basic LAMP Vagrant machine with PHP v<?php echo phpversion(); ?></h1>
     <p><a href="phpinfo.php">phpinfo()</a></p>
     <p><a href="phpmyadmin/">phpMyAdmin</a></p>
 </body>
