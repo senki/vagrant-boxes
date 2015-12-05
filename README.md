@@ -39,7 +39,9 @@ Currently only with VirtualBox provider.
 ## version history
 - 1.0       initial release
 - 1.0.1     updated base boxes
-- 1.0.2     bugfix & updated base boxes
+- 1.0.2     bugfix 
+            updated base box versions
+            updated VirtualBox Guest Additions version
 
 Copyright (c) 2015 Csaba Maulis  
 Licence: [MIT License](LICENSE)
