@@ -38,11 +38,13 @@ Currently only with VirtualBox provider.
     - [VirtualBox](https://www.virtualbox.org)
 
 ## version history
-- 1.0       initial release
-- 1.0.1     updated base boxes
-- 1.0.2     bugfix 
-            updated base box versions
-            updated VirtualBox Guest Additions version
+For details, see git  
+
+- 1.0       2015.11.27
+- 1.0.1     2015.12.02
+- 1.0.2     2015.12.06
+
+## LICENSE
 
 Copyright (c) 2015 Csaba Maulis  
 Licence: [MIT License](LICENSE)
