@@ -107,6 +107,7 @@ do_install_lamp() {
     debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $MYSQL_ROOT_PASS"
     tasksel install lamp-server
     a2enmod rewrite >> $PROVISION_LOG 2>&1
+    sed -i "s/^\t<Directory \/var\/www\/>$/&\n\t\tEnableSendfile Off/" /etc/apache2/sites-available/default-ssl
     service apache2 restart >> $PROVISION_LOG 2>&1
     touch /var/provision/install-lamp
     echo -e "\n" >> $PROVISION_LOG 2>&1
