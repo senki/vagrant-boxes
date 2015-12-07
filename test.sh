@@ -22,7 +22,6 @@ do_test() {
         sort -t '-' -k3nr -k4nr -k5nr -k6nr -k7nr -k8nr |
         head -1
     )
-    subl $LOGFILE
     echo -e  "${YELLOW}Logfile: ${LOGFILE}${NC}"
     echo -ne "${YELLOW}Problem: "
     if grep -i -e warning -e error -e fail -e unable $LOGFILE |
