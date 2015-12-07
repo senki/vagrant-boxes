@@ -83,10 +83,10 @@ do_update() {
 
 do_network() {
     if [ -f "/var/provision/network" ]; then
-        echo "Skipping: Network already confugured" | tee -a $PROVISION_LOG
+        echo "Skipping: Hostname already confugured" | tee -a $PROVISION_LOG
         return
     fi
-    echo "Configuring Network..."  | tee -a $PROVISION_LOG
+    echo "Configuring Hostname..."  | tee -a $PROVISION_LOG
     IPADDR=$(/sbin/ifconfig eth1 | awk '/inet / { print $2 }' | sed 's/addr://')
     sed -i "s/^${IPADDR}.*//" $HOST_CONFIG
     echo ${IPADDR} ${HOST_NAME} >> $HOST_CONFIG           # Just to quiet down some error messages
