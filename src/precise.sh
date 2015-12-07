@@ -18,17 +18,16 @@ WWW_DEFAULT_CONF="default"
 
 do_install_php() {
     if [ -f "/var/provision/install-php" ]; then
-        echo -e "Skipping: PHP v5.4 already installed\n"  | tee -a $PROVISION_LOG
+        echo "Skipping: PHP v5.4 already installed"  | tee -a $PROVISION_LOG
         return
     fi
-    echo -e "Installing PHP v5.4...\n"  | tee -a $PROVISION_LOG
+    echo "Installing PHP v5.4..."  | tee -a $PROVISION_LOG
     add-apt-repository -y ppa:ondrej/php5-oldstable >> $PROVISION_LOG 2>&1
-    apt-get update >> $PROVISION_LOG 2>&1
-    apt-get -y install php5 php5-curl php5-mcrypt libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
-    apt-get -y dist-upgrade >> $PROVISION_LOG 2>&1
-    php5enmod mcrypt
+    apt-get -qy update >> $PROVISION_LOG 2>&1
+    apt-get -qy install php5 php5-curl php5-mcrypt libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
+    apt-get -qy dist-upgrade >> $PROVISION_LOG 2>&1
+    php5enmod mcrypt >> $PROVISION_LOG 2>&1
     touch /var/provision/install-php
-    echo -e "\n" >> $PROVISION_LOG 2>&1
 }
 
 source /vagrant/src/common.sh

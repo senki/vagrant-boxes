@@ -28,10 +28,10 @@ fi
 
 do_prepare() {
     if [ -f "/var/provision/prepare" ]; then
-        echo -e "Skipping: Environment already prepared\n" | tee -a $PROVISION_LOG
+        echo -e "Skipping: Environment already prepared" | tee -a $PROVISION_LOG
         return
     fi
-    echo -e "Preparing Environment...\n" | tee -a $PROVISION_LOG
+    echo -e "Preparing Environment..." | tee -a $PROVISION_LOG
     # remove tty warning
     sed -i "s/^mesg n$/tty -s \&\& mesg n/g" /root/.profile
     # set timezone
@@ -45,19 +45,18 @@ do_prepare() {
     # ssh loce not accept from client
     sed -i "s/^AcceptEnv LANG LC_\*$/\# AcceptEnv LANG LC_\*/g" $SSHD_CONFIG
     touch /var/provision/prepare
-    echo -e "\n" >> $PROVISION_LOG 2>&1
 }
 
 do_install_vbox_ga() {
     if [ -f "/var/provision/install-vbox_ga_$VBOX_GA_VERS" ]; then
-        echo -e "Skipping: VirtualBox Guest Additions v$VBOX_GA_VERS already installed\n" | tee -a $PROVISION_LOG
+        echo "Skipping: VirtualBox Guest Additions v$VBOX_GA_VERS already installed" | tee -a $PROVISION_LOG
         return
     fi
-    echo -e "Installing VirtualBox Guest Additions v$VBOX_GA_VERS...\n" | tee -a $PROVISION_LOG
-    apt-get -y remove virtualbox-\* >> $PROVISION_LOG 2>&1
-    apt-get -y purge virtualbox-\* >> $PROVISION_LOG 2>&1
-    apt-get -y autoremove >> $PROVISION_LOG 2>&1
-    apt-get -y install build-essential linux-headers-generic dkms >> $PROVISION_LOG 2>&1
+    echo "Installing VirtualBox Guest Additions v$VBOX_GA_VERS..." | tee -a $PROVISION_LOG
+    apt-get -qy remove virtualbox-\* >> $PROVISION_LOG 2>&1
+    apt-get -qy purge virtualbox-\* >> $PROVISION_LOG 2>&1
+    apt-get -qy autoremove >> $PROVISION_LOG 2>&1
+    apt-get -qy install build-essential linux-headers-generic dkms >> $PROVISION_LOG 2>&1
     if [ ! -f "/vagrant/vbox_ga_$VBOX_GA_VERS.iso" ]; then
         curl -s -L -o /vagrant/vbox_ga_$VBOX_GA_VERS.iso http://download.virtualbox.org/virtualbox/$VBOX_GA_VERS/VBoxGuestAdditions_$VBOX_GA_VERS.iso >> $PROVISION_LOG 2>&1
     fi
@@ -68,131 +67,132 @@ do_install_vbox_ga() {
     umount /media/vbox_ga_$VBOX_GA_VERS >> $PROVISION_LOG 2>&1
     rmdir /media/vbox_ga_$VBOX_GA_VERS
     touch /var/provision/install-vbox_ga_$VBOX_GA_VERS
-    echo -e "\n" >> $PROVISION_LOG 2>&1
 }
 
 do_update() {
     if [ -f "/var/provision/update" ] && [ `stat --format=%Y /var/provision/update` -ge $(( `date +%s` - (60*60*24) )) ]; then
-        echo -e "Skipping: System already updated within a day\n" | tee -a $PROVISION_LOG
+        echo "Skipping: System already updated within a day" | tee -a $PROVISION_LOG
         return
     fi
-    echo -e "Updating System...\n"  | tee -a $PROVISION_LOG
-    apt-get update >> $PROVISION_LOG 2>&1
-    apt-get -y dist-upgrade >> $PROVISION_LOG 2>&1
-    apt-get -y autoremove >> $PROVISION_LOG 2>&1
+    echo "Updating System..."  | tee -a $PROVISION_LOG
+    apt-get -qy update >> $PROVISION_LOG 2>&1
+    apt-get -qy dist-upgrade >> $PROVISION_LOG 2>&1
+    apt-get -qy autoremove >> $PROVISION_LOG 2>&1
     touch /var/provision/update
-    echo -e "\n" >> $PROVISION_LOG 2>&1
 }
 
 do_network() {
     if [ -f "/var/provision/network" ]; then
-        echo -e "Skipping: Network already confugured\n" | tee -a $PROVISION_LOG
+        echo "Skipping: Network already confugured" | tee -a $PROVISION_LOG
         return
     fi
-    echo -e "Configuring Network...\n"  | tee -a $PROVISION_LOG
+    echo "Configuring Network..."  | tee -a $PROVISION_LOG
     IPADDR=$(/sbin/ifconfig eth1 | awk '/inet / { print $2 }' | sed 's/addr://')
     sed -i "s/^${IPADDR}.*//" $HOST_CONFIG
     echo ${IPADDR} ${HOST_NAME} >> $HOST_CONFIG           # Just to quiet down some error messages
     touch /var/provision/network
-    echo -e "\n" >> $PROVISION_LOG 2>&1
 }
 
 do_install_lamp() {
     if [ -f "/var/provision/install-lamp" ]; then
-        echo -e "Skipping: LAMP Stack already installed\n" | tee -a $PROVISION_LOG
+        echo "Skipping: LAMP Stack already installed" | tee -a $PROVISION_LOG
         return
     fi
     export DEBIAN_FRONTEND=noninteractive
-    echo -e "Installing LAMP Stack...\n"  | tee -a $PROVISION_LOG
+    echo "Installing LAMP Stack..."  | tee -a $PROVISION_LOG
     debconf-set-selections <<< "mysql-server mysql-server/root_password password $MYSQL_ROOT_PASS"
     debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $MYSQL_ROOT_PASS"
-    tasksel install lamp-server
+    apt-get -qy install lamp-server^ >> $PROVISION_LOG 2>&1
     a2enmod rewrite >> $PROVISION_LOG 2>&1
     sed -i "s/^${WWW_CONF_PATTERN}$/&\n\t\tEnableSendfile Off/" /etc/apache2/sites-available/$WWW_DEFAULT_CONF
     service apache2 restart >> $PROVISION_LOG 2>&1
     touch /var/provision/install-lamp
-    echo -e "\n" >> $PROVISION_LOG 2>&1
 }
 
 do_files() {
     if [ -f "/var/provision/files" ]; then
-        echo -e "Skipping: WWW files already in place...\n" | tee -a $PROVISION_LOG
+        echo "Skipping: WWW files already in place..." | tee -a $PROVISION_LOG
         return
     fi
-    echo -e "Setting up WWW files...\n" | tee -a $PROVISION_LOG
+    echo "Setting up WWW files..." | tee -a $PROVISION_LOG
     service apache2 stop >> $PROVISION_LOG 2>&1
     rm -rf $WWW_ROOT
     ln -fs /vagrant/wwwroot $WWW_ROOT
     service apache2 start >> $PROVISION_LOG 2>&1
     touch /var/provision/files
-    echo -e "\n" >> $PROVISION_LOG 2>&1
 }
 
 do_install_phpmyadmin() {
     if [ -f "/var/provision/install-phpmyadmin" ]; then
-        echo -e "Skipping: phpMyAdmin already installed\n" | tee -a $PROVISION_LOG
+        echo "Skipping: phpMyAdmin already installed" | tee -a $PROVISION_LOG
         return
     fi
 
-    echo -e "Installing phpMyAdmin...\n" | tee -a $PROVISION_LOG
+    echo "Installing phpMyAdmin..." | tee -a $PROVISION_LOG
     add-apt-repository -y ppa:nijel/phpmyadmin >> $PROVISION_LOG 2>&1
-    apt-get update >> $PROVISION_LOG 2>&1
+    apt-get -qy update >> $PROVISION_LOG 2>&1
     debconf-set-selections <<< "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2"
     debconf-set-selections <<< "phpmyadmin phpmyadmin/dbconfig-install boolean true"
     debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-user string root"
     debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-pass password $MYSQL_ROOT_PASS"
     debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password $PHPMYADMIN_APP_PASS"
     debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password $PHPMYADMIN_APP_PASS"
-    apt-get -y install phpmyadmin >> $PROVISION_LOG 2>&1
+    apt-get -qy install phpmyadmin >> $PROVISION_LOG 2>&1
     touch /var/provision/install-phpmyadmin
-    echo -e "\n" >> $PROVISION_LOG 2>&1
 }
 
 do_install_utilities() {
     if [ -f "/var/provision/install-utilities" ]; then
-        echo -e "Skipping: Utility softwares already installed\n" | tee -a $PROVISION_LOG
+        echo "Skipping: Utility softwares already installed" | tee -a $PROVISION_LOG
         return
     fi
-    echo -e "Installing utility softwares...\n" | tee -a $PROVISION_LOG
+    echo "Installing utility softwares..." | tee -a $PROVISION_LOG
     # tree
-    apt-get -y install tree >> $PROVISION_LOG 2>&1
+    apt-get -qy install tree >> $PROVISION_LOG 2>&1
     # multitail
-    apt-get -y install libncursesw5-dev >> $PROVISION_LOG 2>&1
+    apt-get -qy install libncursesw5-dev >> $PROVISION_LOG 2>&1
     curl -s -L -O https://github.com/flok99/multitail/archive/v6.3.tar.gz >> $PROVISION_LOG 2>&1
     tar xzf v6.3.tar.gz
     rm v6.3.tar.gz
-    cd multitail-6.3 && make install >> $PROVISION_LOG 2>&1 && cd ..
+    cd multitail-6.3 && make install -s >> $PROVISION_LOG 2>&1 && cd ..
     rm -rf multitail-6.3
     cp /etc/multitail.conf.new $MULTITAIL_CONFIG
     sed -i "s/^xclip:\/usr\/bin\/xclip$/\# xclip:\/usr\/bin\/xclip/g" $MULTITAIL_CONFIG
     touch /var/provision/install-utilities
-    echo -e "\n" >> $PROVISION_LOG 2>&1
 }
 
 main() {
     if [ ! -f $PROVISION_LOG ]; then
         touch $PROVISION_LOG
     fi
-    echo -e "\n" >> $PROVISION_LOG 2>&1
-    echo -e "Box provisioning start at: $(date)\n" >> $PROVISION_LOG 2>&1
+    echo "==> Box provisioning start at: $(date)" >> $PROVISION_LOG 2>&1
     if [ ! -d "/var/provision" ]; then
         mkdir /var/provision
     fi
+    echo -n "==> " >> $PROVISION_LOG 2>&1
     do_prepare
+    echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_vbox_ga
+    echo -n "==> " >> $PROVISION_LOG 2>&1
     do_update
     if [ $TARGET == "test" ]; then
+        echo -n "==> " >> $PROVISION_LOG 2>&1
         do_network
     fi
+    echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_php
+    echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_lamp
     if [ $TARGET == "test" ]; then
+        echo -n "==> " >> $PROVISION_LOG 2>&1
         do_files
     fi
+    echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_phpmyadmin
+    echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_utilities
     updatedb >> $PROVISION_LOG 2>&1
-    echo -e "All done"
-    echo -e "Box provisioning done at: $(date)\n" >> $PROVISION_LOG 2>&1
+    echo "All done"
+    echo "==> Box provisioning done at: $(date)" >> $PROVISION_LOG 2>&1
     cp $PROVISION_LOG /vagrant/log/$BASE_OS-$TARGET-$NOW.log
 }

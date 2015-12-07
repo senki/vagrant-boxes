@@ -18,14 +18,13 @@ WWW_DEFAULT_CONF="000-default.conf"
 
 do_install_php() {
     if [ -f "/var/provision/install-php" ]; then
-        echo -e "Skipping: PHP Extensions already installed\n"  | tee -a $PROVISION_LOG
+        echo "Skipping: PHP Extensions already installed"  | tee -a $PROVISION_LOG
         return
     fi
-    echo -e "Installing PHP Extensions...\n"  | tee -a $PROVISION_LOG
-    apt-get -y install php5 php5-curl php5-mcrypt libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
-    php5enmod mcrypt
+    echo "Installing PHP Extensions..."  | tee -a $PROVISION_LOG
+    apt-get -qy install php5 php5-curl php5-mcrypt libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
+    php5enmod mcrypt >> $PROVISION_LOG 2>&1
     touch /var/provision/install-php
-    echo -e "\n" >> $PROVISION_LOG 2>&1
 }
 
 source /vagrant/src/common.sh
