@@ -104,7 +104,6 @@ do_install_lamp() {
     debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $MYSQL_ROOT_PASS"
     apt-get -qy install lamp-server^ >> $PROVISION_LOG 2>&1
     a2enmod rewrite >> $PROVISION_LOG 2>&1
-    sed -i "s/^${WWW_CONF_PATTERN}$/&\n\t\tEnableSendfile Off/" /etc/apache2/sites-available/$WWW_DEFAULT_CONF
     service apache2 restart >> $PROVISION_LOG 2>&1
     touch /var/provision/install-lamp
 }
@@ -183,6 +182,8 @@ main() {
     do_install_php
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_lamp
+    echo -n "==> " >> $PROVISION_LOG 2>&1
+    do_config_apache
     if [ $TARGET == "test" ]; then
         echo -n "==> " >> $PROVISION_LOG 2>&1
         do_files

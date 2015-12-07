@@ -13,8 +13,6 @@ set -e
 BASE_OS="precise64"
 HOST_NAME="lamp-precise.local"
 WWW_ROOT="/var/www"
-WWW_CONF_PATTERN="\t<Directory \/var\/www\/>"
-WWW_DEFAULT_CONF="default"
 
 do_install_php() {
     if [ -f "/var/provision/install-php" ]; then
@@ -28,6 +26,20 @@ do_install_php() {
     apt-get -qy dist-upgrade >> $PROVISION_LOG 2>&1
     php5enmod mcrypt >> $PROVISION_LOG 2>&1
     touch /var/provision/install-php
+}
+
+do_config_apache() {
+    if [ -f "/var/provision/apache" ]; then
+        echo "Skipping: Apache environment already cinfigured"  | tee -a $PROVISION_LOG
+        return
+    fi
+    echo "Configuring apache environment..."  | tee -a $PROVISION_LOG
+    # .htaccess
+    sed -i "s/AllowOverride None/AllowOverride All/" /etc/apache2/sites-available/default
+    # virtualbox shared folder
+    sed -i "s/^\t<Directory \/var\/www\/>$/&\n\t\tEnableSendfile Off/" /etc/apache2/sites-available/default
+    service apache2 restart >> $PROVISION_LOG 2>&1
+    touch /var/provision/apache
 }
 
 source /vagrant/src/common.sh

@@ -13,8 +13,6 @@ set -e
 BASE_OS="trusty64"
 HOST_NAME="lamp-trusty.local"
 WWW_ROOT="/var/www/html"
-WWW_CONF_PATTERN="\tDocumentRoot \/var\/www\/html"
-WWW_DEFAULT_CONF="000-default.conf"
 
 do_install_php() {
     if [ -f "/var/provision/install-php" ]; then
@@ -25,6 +23,20 @@ do_install_php() {
     apt-get -qy install php5 php5-curl php5-mcrypt libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
     php5enmod mcrypt >> $PROVISION_LOG 2>&1
     touch /var/provision/install-php
+}
+
+do_config_apache() {
+    if [ -f "/var/provision/apache" ]; then
+        echo "Skipping: Apache environment already cinfigured"  | tee -a $PROVISION_LOG
+        return
+    fi
+    echo "Configuring apache environment..."  | tee -a $PROVISION_LOG
+    # .htaccess
+    sed -i "s/AllowOverride None/AllowOverride All/" /etc/apache2/apache2.conf
+    # virtualbox shared folder
+    sed -i "s/^\tDocumentRoot \/var\/www\/html$/&\n\tEnableSendfile Off/" /etc/apache2/sites-available/000-default.conf
+    service apache2 restart >> $PROVISION_LOG 2>&1
+    touch /var/provision/apache
 }
 
 source /vagrant/src/common.sh
