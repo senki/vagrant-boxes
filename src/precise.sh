@@ -10,6 +10,7 @@
 
 set -e
 
+BASE_OS="precise64"
 HOST_NAME="lamp-precise.local"
 WWW_ROOT="/var/www"
 WWW_CONF_PATTERN="\t<Directory \/var\/www\/>"

@@ -7,6 +7,8 @@
 set -e
 
 GREEN='\033[1;32m'
+YELLOW='\033[0;33m'
+RED='\033[1;31m'
 NC="\033[0m"
 
 do_test() {
@@ -14,6 +16,24 @@ do_test() {
     vagrant destroy ${BOX_NAME}_test -f
     echo -e "${GREEN}Building ubuntu ${BOX_NAME} tls x64 test box${NC}"
     vagrant up ${BOX_NAME}_test --provision
+    find ./log -mtime +1 -type f -delete
+    LOGFILE=$(
+        find ./log -type f |
+        sort -t '-' -k3nr -k4nr -k5nr -k6nr -k7nr -k8nr |
+        head -1
+    )
+    subl $LOGFILE
+    echo -e  "${YELLOW}Logfile: ${LOGFILE}${NC}"
+    echo -ne "${YELLOW}Problem: "
+    if grep -i -e warning -e error -e fail -e unable $LOGFILE |
+    grep -vc -e error.o -e error-pages -e "unable to re-open stdin" -e "key_buffer instead of key_buffer_size"; then
+        echo -e "${RED}Logfile has error(s), aborting!${NC}"
+        echo "    All foundigs:"
+        grep -i -e warning -e error -e fail -e unable $LOGFILE
+        exit
+    else
+        echo -e "${GREEN}No unknown errors in logfile${NC}"
+    fi
     open "http://lamp-${BOX_NAME}-test.local"
 }
 

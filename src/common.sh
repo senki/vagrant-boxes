@@ -8,6 +8,7 @@
 #  $ vagrant provision
 # From the host machine
 
+NOW=$(date +"%Y-%m-%d-%H-%M-%S")
 HOST_CONFIG="/etc/hosts"
 LOCALE_CONFIG="/etc/default/locale"
 MULTITAIL_CONFIG="/etc/multitail.conf"
@@ -20,9 +21,9 @@ PHPMYADMIN_APP_PASS="vagrant"
 PROVISION_LOG="/var/log/provision.log"
 
 if [ $# -ne 0 ]; then
-    SCRIPT_ARG=$1
+    TARGET=$1
 else
-    SCRIPT_ARG="prod" # anything but "test"
+    TARGET="prod" # production
 fi
 
 do_prepare() {
@@ -180,12 +181,12 @@ main() {
     do_prepare
     do_install_vbox_ga
     do_update
-    if [ $SCRIPT_ARG == "test" ]; then
+    if [ $TARGET == "test" ]; then
         do_network
     fi
     do_install_php
     do_install_lamp
-    if [ $SCRIPT_ARG == "test" ]; then
+    if [ $TARGET == "test" ]; then
         do_files
     fi
     do_install_phpmyadmin
@@ -193,4 +194,5 @@ main() {
     updatedb >> $PROVISION_LOG 2>&1
     echo -e "All done"
     echo -e "Box provisioning done at: $(date)\n" >> $PROVISION_LOG 2>&1
+    cp $PROVISION_LOG /vagrant/log/$BASE_OS-$TARGET-$NOW.log
 }

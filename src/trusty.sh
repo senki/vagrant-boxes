@@ -10,6 +10,7 @@
 
 set -e
 
+BASE_OS="trusty64"
 HOST_NAME="lamp-trusty.local"
 WWW_ROOT="/var/www/html"
 WWW_CONF_PATTERN="\tDocumentRoot \/var\/www\/html"

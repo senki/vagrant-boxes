@@ -1,3 +1,4 @@
 .vagrant
 dist
+log
 vbox_ga_*

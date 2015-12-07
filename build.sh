@@ -7,17 +7,36 @@
 set -e
 
 GREEN='\033[1;32m'
+YELLOW='\033[0;33m'
+RED='\033[1;31m'
 NC="\033[0m"
 
 do_build() {
     echo -e "${GREEN}Building ubuntu ${BOX_NAME} tls x64 vagrant box${NC}"
+    vagrant up ${BOX_NAME}
+    find ./log -mtime +1 -type f -delete
+    LOGFILE=$(
+        find ./log -type f |
+        sort -t '-' -k3nr -k4nr -k5nr -k6nr -k7nr -k8nr |
+        head -1
+    )
+    echo -e  "${YELLOW}Logfile: ${LOGFILE}${NC}"
+    echo -ne "${YELLOW}Problem: "
+    if grep -i -e warning -e error -e fail -e unable $LOGFILE |
+    grep -vc -e error.o -e error-pages -e "unable to re-open stdin" -e "key_buffer instead of key_buffer_size"; then
+        echo -e "${RED}Logfile has error(s), aborting!${NC}"
+        echo "    All foundigs:"
+        grep -i -e warning -e error -e fail -e unable $LOGFILE
+        exit
+    else
+        echo -e "${GREEN}No unknown errors in logfile${NC}"
+    fi
     if [ ! -d "dist" ]; then
         mkdir dist
     fi
     if [ -f "dist/${BOX_NAME}.box" ]; then
         rm dist/${BOX_NAME}.box
     fi
-    vagrant up ${BOX_NAME} --provision
     vagrant package ${BOX_NAME} --output dist/${BOX_NAME}.box
     vagrant box add src/${BOX_NAME}.json
     rm dist/${BOX_NAME}.box
