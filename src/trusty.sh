@@ -12,6 +12,8 @@ set -e
 
 HOST_NAME="lamp-trusty.local"
 WWW_ROOT="/var/www/html"
+WWW_CONF_PATTERN="\tDocumentRoot \/var\/www\/html"
+WWW_DEFAULT_CONF="000-default.conf"
 
 do_install_php() {
     if [ -f "/var/provision/install-php" ]; then

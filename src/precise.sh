@@ -12,6 +12,8 @@ set -e
 
 HOST_NAME="lamp-precise.local"
 WWW_ROOT="/var/www"
+WWW_CONF_PATTERN="\t<Directory \/var\/www\/>"
+WWW_DEFAULT_CONF="default"
 
 do_install_php() {
     if [ -f "/var/provision/install-php" ]; then
