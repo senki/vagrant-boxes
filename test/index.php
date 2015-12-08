@@ -92,7 +92,7 @@ $mysqli->close();
   </div>
  <div class="row">
     <div class="ten columns">
-        <pre><code><strong>Hostname:</strong> <?php echo gethostname(); ?><br><strong>Hostname:</strong> <?php echo $_SERVER['HTTP_HOST']; ?><br><strong>Box version:</strong> <?php echo file_get_contents("/var/provision/version"); ?></code></pre>
+        <pre><code><strong>Hostname:</strong> <?php echo gethostname(); ?><br><strong>Hostname long:</strong> <?php echo $_SERVER['HTTP_HOST']; ?><br><strong>Vagrant Box:</strong> <?php echo file_get_contents("/var/provision/version"); ?></code></pre>
     </div>
     <div class="two columns">
         <p><br><a href="info.php">phpinfo()</a><br>
