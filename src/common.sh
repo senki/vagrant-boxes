@@ -116,7 +116,7 @@ do_files() {
     echo "Setting up WWW files..." | tee -a $PROVISION_LOG
     service apache2 stop >> $PROVISION_LOG 2>&1
     rm -rf $WWW_ROOT
-    ln -fs /vagrant/wwwroot $WWW_ROOT
+    ln -fs /vagrant/test $WWW_ROOT
     service apache2 start >> $PROVISION_LOG 2>&1
     touch /var/provision/files
 }
