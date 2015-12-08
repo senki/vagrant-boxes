@@ -10,7 +10,7 @@
 
 set -e
 
-BASE_OS="trusty64"
+BASE_OS="trusty"
 HOST_NAME="lamp-trusty.local"
 WWW_ROOT="/var/www/html"
 

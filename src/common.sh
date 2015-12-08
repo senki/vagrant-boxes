@@ -160,6 +160,20 @@ do_install_utilities() {
     touch /var/provision/install-utilities
 }
 
+do_save_version() {
+    if [ -f "/var/provision/version" ]; then
+        echo "Displaying version info from /var/provision/version file.." | tee -a $PROVISION_LOG
+        echo  /var/provision/version | tee -a $PROVISION_LOG
+        return
+    fi
+    echo "Saving version info to /var/provision/version file.." | tee -a $PROVISION_LOG
+    apt-get -qy install ruby1.9.1 >> $PROVISION_LOG 2>&1
+    BOX_NAME=$(cat /vagrant/src/${BASE_OS}.json | ruby1.9.1 -rjson -e 'j = JSON.parse(STDIN.read); puts j["name"]')
+    BOX_VERSION=$(cat /vagrant/src/${BASE_OS}.json | ruby1.9.1 -rjson -e 'j = JSON.parse(STDIN.read); puts j["versions"][0]["version"]')
+    echo "$BOX_NAME v$BOX_VERSION" > /var/provision/version
+
+}
+
 main() {
     if [ ! -f $PROVISION_LOG ]; then
         touch $PROVISION_LOG
@@ -192,9 +206,10 @@ main() {
     do_install_phpmyadmin
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_utilities
-    echo "$BOX_NAME v$BOX_VERSION" > /var/provision/version
+    echo -n "==> " >> $PROVISION_LOG 2>&1
+    do_save_version
     updatedb >> $PROVISION_LOG 2>&1
     echo "All done"
     echo "==> Box provisioning done at: $(date)" >> $PROVISION_LOG 2>&1
-    cp $PROVISION_LOG /vagrant/log/$BASE_OS-$TARGET-$NOW.log
+    cp $PROVISION_LOG /vagrant/log/${BASE_OS}64-$TARGET-$NOW.log
 }
