@@ -104,6 +104,8 @@ do_install_lamp() {
     debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $MYSQL_ROOT_PASS"
     apt-get -qy install lamp-server^ >> $PROVISION_LOG 2>&1
     a2enmod rewrite >> $PROVISION_LOG 2>&1
+    mv /etc/php5/apache2/php.ini /etc/php5/apache2/php.ini.bak >> $PROVISION_LOG 2>&1
+    cp -s /usr/share/php5/php.ini-development /etc/php5/apache2/php.ini >> $PROVISION_LOG 2>&1
     service apache2 restart >> $PROVISION_LOG 2>&1
     touch /var/provision/install-lamp
 }
