@@ -11,6 +11,8 @@
 set -e
 
 BASE_OS="precise64"
+BOX_NAME=$(ruby -rjson -e 'j = JSON.parse(File.read("precise.json")); puts j["name"]')
+BOX_VERSION=$(ruby -rjson -e 'j = JSON.parse(File.read("precise.json")); puts j["versions"][0]["version"]')
 HOST_NAME="lamp-precise.local"
 WWW_ROOT="/var/www"
 

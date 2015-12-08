@@ -192,6 +192,7 @@ main() {
     do_install_phpmyadmin
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_utilities
+    echo "$BOX_NAME v$BOX_VERSION" > /var/provision/version
     updatedb >> $PROVISION_LOG 2>&1
     echo "All done"
     echo "==> Box provisioning done at: $(date)" >> $PROVISION_LOG 2>&1
