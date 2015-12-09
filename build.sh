@@ -13,6 +13,8 @@ NC="\033[0m"
 
 do_build() {
     echo -e "${GREEN}Building ubuntu ${BOX_NAME} tls x64 vagrant box${NC}"
+    vagrant box remove senki/${BOX_NAME}64 -f
+    vagrant destroy ${BOX_NAME} -f
     vagrant up ${BOX_NAME}
     find ./log -mtime +1 -type f -delete
     LOGFILE=$(
