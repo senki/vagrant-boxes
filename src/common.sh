@@ -20,14 +20,14 @@ MYSQL_ROOT_PASS="vagrant"
 PHPMYADMIN_APP_PASS="vagrant"
 PROVISION_LOG="/var/log/provision.log"
 
-if [ $# -ne 0 ]; then
+if [[ $# -ne 0 ]]; then
     TARGET=$1
 else
     TARGET="prod" # production
 fi
 
 do_prepare() {
-    if [ -f "/var/provision/prepare" ]; then
+    if [[ -f "/var/provision/prepare" ]]; then
         echo -e "Skipping: Environment already prepared" | tee -a $PROVISION_LOG
         return
     fi
@@ -48,7 +48,7 @@ do_prepare() {
 }
 
 do_install_vbox_ga() {
-    if [ -f "/var/provision/install-vbox_ga_$VBOX_GA_VERS" ]; then
+    if [[ -f "/var/provision/install-vbox_ga_$VBOX_GA_VERS" ]]; then
         echo "Skipping: VirtualBox Guest Additions v$VBOX_GA_VERS already installed" | tee -a $PROVISION_LOG
         return
     fi
@@ -57,7 +57,7 @@ do_install_vbox_ga() {
     apt-get -qy purge virtualbox-\* >> $PROVISION_LOG 2>&1
     apt-get -qy autoremove >> $PROVISION_LOG 2>&1
     apt-get -qy install build-essential linux-headers-generic dkms >> $PROVISION_LOG 2>&1
-    if [ ! -f "/vagrant/vbox_ga_$VBOX_GA_VERS.iso" ]; then
+    if [[ ! -f "/vagrant/vbox_ga_$VBOX_GA_VERS.iso" ]]; then
         curl -s -L -o /vagrant/vbox_ga_$VBOX_GA_VERS.iso http://download.virtualbox.org/virtualbox/$VBOX_GA_VERS/VBoxGuestAdditions_$VBOX_GA_VERS.iso >> $PROVISION_LOG 2>&1
     fi
     mkdir /media/vbox_ga_$VBOX_GA_VERS
@@ -70,7 +70,7 @@ do_install_vbox_ga() {
 }
 
 do_update() {
-    if [ -f "/var/provision/update" ] && [ `stat --format=%Y /var/provision/update` -ge $(( `date +%s` - (60*60*24) )) ]; then
+    if [[ -f "/var/provision/update" ]] && [[ `stat --format=%Y /var/provision/update` -ge $(( `date +%s` - (60*60*24) )) ]]; then
         echo "Skipping: System already updated within a day" | tee -a $PROVISION_LOG
         return
     fi
@@ -82,7 +82,7 @@ do_update() {
 }
 
 do_network() {
-    if [ -f "/var/provision/network" ]; then
+    if [[ -f "/var/provision/network" ]]; then
         echo "Skipping: Hostname already confugured" | tee -a $PROVISION_LOG
         return
     fi
@@ -94,7 +94,7 @@ do_network() {
 }
 
 do_install_lamp() {
-    if [ -f "/var/provision/install-lamp" ]; then
+    if [[ -f "/var/provision/install-lamp" ]]; then
         echo "Skipping: LAMP Stack already installed" | tee -a $PROVISION_LOG
         return
     fi
@@ -111,7 +111,7 @@ do_install_lamp() {
 }
 
 do_files() {
-    if [ -f "/var/provision/files" ]; then
+    if [[ -f "/var/provision/files" ]]; then
         echo "Skipping: WWW files already in place..." | tee -a $PROVISION_LOG
         return
     fi
@@ -124,11 +124,10 @@ do_files() {
 }
 
 do_install_phpmyadmin() {
-    if [ -f "/var/provision/install-phpmyadmin" ]; then
+    if [[ -f "/var/provision/install-phpmyadmin" ]]; then
         echo "Skipping: phpMyAdmin already installed" | tee -a $PROVISION_LOG
         return
     fi
-
     echo "Installing phpMyAdmin..." | tee -a $PROVISION_LOG
     debconf-set-selections <<< "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2"
     debconf-set-selections <<< "phpmyadmin phpmyadmin/dbconfig-install boolean true"
@@ -141,7 +140,7 @@ do_install_phpmyadmin() {
 }
 
 do_install_utilities() {
-    if [ -f "/var/provision/install-utilities" ]; then
+    if [[ -f "/var/provision/install-utilities" ]]; then
         echo "Skipping: Utility softwares already installed" | tee -a $PROVISION_LOG
         return
     fi
@@ -161,12 +160,12 @@ do_install_utilities() {
 }
 
 do_save_version() {
-    if [ -f "/var/provision/version" ]; then
-        echo "Displaying version info from /var/provision/version file.." | tee -a $PROVISION_LOG
+    if [[ -f "/var/provision/version" ]]; then
+        echo "Version info from already stored:" | tee -a $PROVISION_LOG
         echo  /var/provision/version | tee -a $PROVISION_LOG
         return
     fi
-    echo "Saving version info to /var/provision/version file.." | tee -a $PROVISION_LOG
+    echo "Saving version info to file..." | tee -a $PROVISION_LOG
     apt-get -qy install ruby1.9.1 >> $PROVISION_LOG 2>&1
     BOX_NAME=$(cat /vagrant/src/${BASE_OS}.json | ruby1.9.1 -rjson -e 'j = JSON.parse(STDIN.read); puts j["name"]')
     BOX_VERSION=$(cat /vagrant/src/${BASE_OS}.json | ruby1.9.1 -rjson -e 'j = JSON.parse(STDIN.read); puts j["versions"][0]["version"]')
@@ -175,11 +174,11 @@ do_save_version() {
 }
 
 main() {
-    if [ ! -f $PROVISION_LOG ]; then
+    if [[ ! -f $PROVISION_LOG ]]; then
         touch $PROVISION_LOG
     fi
     echo "==> Box provisioning start at: $(date)" >> $PROVISION_LOG 2>&1
-    if [ ! -d "/var/provision" ]; then
+    if [[ ! -d "/var/provision" ]]; then
         mkdir /var/provision
     fi
     echo -n "==> " >> $PROVISION_LOG 2>&1
@@ -188,7 +187,7 @@ main() {
     do_install_vbox_ga
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_update
-    if [ $TARGET == "test" ]; then
+    if [[ $TARGET == "test" ]]; then
         echo -n "==> " >> $PROVISION_LOG 2>&1
         do_network
     fi
@@ -198,7 +197,7 @@ main() {
     do_install_lamp
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_config_apache
-    if [ $TARGET == "test" ]; then
+    if [[ $TARGET == "test" ]]; then
         echo -n "==> " >> $PROVISION_LOG 2>&1
         do_files
     fi
