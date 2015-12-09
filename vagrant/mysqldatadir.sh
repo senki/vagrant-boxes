@@ -19,7 +19,7 @@
 case "$1" in
     start)
         echo "Restoring MySQL Data directory. Or first time backup."
-        if [[ ! -f "/vagrant/vagrant/db/mysql.tar.gz" ]]; then
+        if [ ! -f "/vagrant/vagrant/db/mysql.tar.gz" ]; then
             tar -czf /vagrant/vagrant/db/mysql.tar.gz -C /var/lib/mysql/ . # backup
         else
             service mysql stop
