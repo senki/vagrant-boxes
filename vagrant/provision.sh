@@ -16,7 +16,7 @@ HOST_CONFIG="/etc/hosts"
 PROVISION_LOG="/var/log/project-provision.log"
 
 do_update() {
-    if [ -f "/var/provision/update" ] && [ `stat --format=%Y /var/provision/update` -ge $(( `date +%s` - (60*60*24) )) ]; then
+    if [[ -f "/var/provision/update" ]] && [[ `stat --format=%Y /var/provision/update` -ge $(( `date +%s` - (60*60*24) )) ]]; then
         echo "Skipping: System already updated within a day" | tee -a $PROVISION_LOG
         return
     fi
@@ -28,7 +28,7 @@ do_update() {
 }
 
 do_network() {
-    if [ -f "/var/provision/network" ]; then
+    if [[ -f "/var/provision/network" ]]; then
         echo "Skipping: Hostname already confugured" | tee -a $PROVISION_LOG
         return
     fi
@@ -40,7 +40,7 @@ do_network() {
 }
 
 do_mysql() {
-    if [ -f "/var/provision/mysql" ]; then
+    if [[ -f "/var/provision/mysql" ]]; then
         echo "Skipping: MySQL already configured..." | tee -a $PROVISION_LOG
         return
     fi
@@ -54,11 +54,11 @@ do_mysql() {
 }
 
 main() {
-    if [ ! -f $PROVISION_LOG ]; then
+    if [[ ! -f $PROVISION_LOG ]]; then
         touch $PROVISION_LOG
     fi
     echo "==> Project provisioning start at: $(date)" >> $PROVISION_LOG 2>&1
-    if [ ! -d "/var/provision" ]; then
+    if [[ ! -d "/var/provision" ]]; then
         mkdir /var/provision
     fi
     echo -n "==> " >> $PROVISION_LOG 2>&1
