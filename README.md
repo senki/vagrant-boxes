@@ -44,6 +44,7 @@ For details, see git
 - 1.0.1     2015.12.02
 - 1.0.2     2015.12.06
 - 1.0.3     2015.12.07
+- 1.10      2015.12.09 - use different phpmysql versions
 
 ## LICENSE
 

@@ -3,10 +3,10 @@
     "description": "Ubuntu Trusty x64 LAMP Dev Environment with PHP v5.5 & PHPMyAdmin",
     "short_description": "Trusty LAMP PHP v5.5 Dev Environment",
     "versions": [{
-        "version": "1.0.4",
+        "version": "1.1.0",
         "status": "active",
-        "description_html": "<p>Based on ubuntu/trusty64 20151119.0.0</p>",
-        "description_markdown": "Based on ubuntu/trusty64 20151119.0.0",
+        "description_html": "<p>Based on ubuntu/trusty64</p>",
+        "description_markdown": "Based on ubuntu/trusty64",
         "providers": [{
             "name": "virtualbox",
             "url": "dist/trusty.box"
