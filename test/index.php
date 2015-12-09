@@ -91,12 +91,8 @@ $mysqli->close();
     </div>
   </div>
  <div class="row">
-    <div class="ten columns">
+    <div class="twelve columns">
         <pre><code><strong>Hostname:</strong> <?php echo gethostname(); ?><br><strong>Hostname long:</strong> <?php echo $_SERVER['HTTP_HOST']; ?><br><strong>Vagrant Box:</strong> <?php echo file_get_contents("/var/provision/version"); ?></code></pre>
-    </div>
-    <div class="two columns">
-        <p><br><a href="info.php">phpinfo()</a><br>
-        <a href="phpmyadmin/">phpMyAdmin</a></p>
     </div>
   </div>
 
@@ -112,6 +108,8 @@ $mysqli->close();
     <div class="one-half column">
         <h4>MySQL</h4>
         <pre><code><strong>MySQL Server:</strong> <?php echo $mysql_serverinfo; ?><br><strong>MySQL Client:</strong> <?php echo $mysql_clientinfo; ?></code></pre>
+        <h4>phpMyAdmin</h4>
+        <pre><code><?php echo str_replace("Version", "<strong>Version</strong>", exec('dpkg -s phpmyadmin | grep Version')); ?> • <a href="phpmyadmin/">Load phpMyAdmin</a></code></pre>
         <ul>
         </ul>
     </div>
@@ -125,23 +123,17 @@ $mysqli->close();
     </div>
     <div class="one-half column">
         <h4>PHP</h4>
-        <pre><code><strong>Version:</strong> <?php echo phpversion(); ?></code></pre>
+        <pre><code><strong>Version:</strong> <?php echo phpversion(); ?> • <a href="info.php">Load phpinfo()</a></code></pre>
         <h5>Enabled Extension:</h5>
         <pre><code class="multicolumn-three"><?php echo implode("\n", get_loaded_extensions());?></code></pre>
 
     </div>
   </div>
 <div class="row">
-    <div class="three columns">
-    &nbsp;
-    </div>
-    <div class="six columns">
-    <p><strong>Boilerplate</strong> © 2015 Csaba Maulis</p>
-    <p><em>Intentionally PHP errors:</em>
-    <?php ecce; homo;?>
-    </div>
-    <div class="three columns">
-    &nbsp;
+    <div class="twelwe columns">
+        <p><strong>Boilerplate</strong> © 2015 Csaba Maulis</p>
+        <p><em>Intentionally PHP errors:</em>
+        <?php ecce; homo;?>
     </div>
   </div>
 
