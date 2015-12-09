@@ -1,4 +1,4 @@
-.vagrant
-vagrant/db/*
-vagrant/log/*
-logo.png
+/.vagrant
+/vagrant/db/*
+/vagrant/log/*
+/logo.png

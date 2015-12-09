@@ -1,4 +1,4 @@
-.gitattributes         merge=ours
-.gitignore             merge=ours
-README.md              merge=ours
-test                   merge=ours
+/.gitattributes         merge=ours
+/.gitignore             merge=ours
+/README.md              merge=ours
+/vagrant/test           merge=ours
