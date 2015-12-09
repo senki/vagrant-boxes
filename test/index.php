@@ -109,7 +109,7 @@ $mysqli->close();
         <h4>MySQL</h4>
         <pre><code><strong>MySQL Server:</strong> <?php echo $mysql_serverinfo; ?><br><strong>MySQL Client:</strong> <?php echo $mysql_clientinfo; ?></code></pre>
         <h4>phpMyAdmin</h4>
-        <pre><code><?php echo str_replace("Version", "<strong>Version</strong>", exec('dpkg -s phpmyadmin | grep Version')); ?> • <a href="phpmyadmin/">Load phpMyAdmin</a></code></pre>
+        <pre><code><?php echo str_replace("Version", "<strong>Version</strong>", exec('dpkg -s phpmyadmin | grep Version')); ?> • <a href="phpmyadmin/" target="_blank">Open phpMyAdmin</a></code></pre>
         <ul>
         </ul>
     </div>
@@ -123,7 +123,7 @@ $mysqli->close();
     </div>
     <div class="one-half column">
         <h4>PHP</h4>
-        <pre><code><strong>Version:</strong> <?php echo phpversion(); ?> • <a href="info.php">Load phpinfo()</a></code></pre>
+        <pre><code><strong>Version:</strong> <?php echo phpversion(); ?> • <a href="info.php" target="_blank">Open phpinfo()</a></code></pre>
         <h5>Enabled Extension:</h5>
         <pre><code class="multicolumn-three"><?php echo implode("\n", get_loaded_extensions());?></code></pre>
 
