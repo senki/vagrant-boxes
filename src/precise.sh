@@ -23,6 +23,8 @@ do_install_os_specific() {
     add-apt-repository -y ppa:ondrej/php5-oldstable >> $PROVISION_LOG 2>&1
     apt-get -qy update >> $PROVISION_LOG 2>&1
     apt-get -qy install php5 php5-curl php5-mcrypt libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
+    mv /etc/php5/apache2/php.ini /etc/php5/apache2/php.ini.bak >> $PROVISION_LOG 2>&1
+    cp -s /usr/share/php5/php.ini-development /etc/php5/apache2/php.ini >> $PROVISION_LOG 2>&1
     apt-get -qy dist-upgrade >> $PROVISION_LOG 2>&1
     php5enmod mcrypt >> $PROVISION_LOG 2>&1
     touch /var/provision/install-${BASE_OS}-specific

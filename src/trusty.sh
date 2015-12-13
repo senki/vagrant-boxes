@@ -11,7 +11,11 @@
 set -e
 
 BASE_OS="trusty"
-HOST_NAME="senki-trusty.local"
+if [[ $PHP_VERS -eq 7 ]]; then
+    HOST_NAME="senki-trusty-php7.local"
+else
+    HOST_NAME="senki-trusty.local"
+fi
 WWW_ROOT="/var/www/html"
 
 do_install_os_specific() {
@@ -27,7 +31,7 @@ do_install_os_specific() {
         apt-get -qy update >> $PROVISION_LOG 2>&1
         apt-get -qy install mysql-server-5.6 php7.0 php7.0-curl php7.0-mcrypt php7.0-intl libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
     else
-        apt-get -qy install mysql-server-5.6 php5 php5-curl php5-mcrypt php5-intl php5-xsl libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
+        apt-get -qy install mysql-server-5.6 php5 php7.0-mysql php5-curl php5-mcrypt php5-intl php5-xsl libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
         php5enmod mcrypt >> $PROVISION_LOG 2>&1
         php5enmod curl >> $PROVISION_LOG 2>&1
         php5enmod xsl >> $PROVISION_LOG 2>&1
@@ -42,6 +46,14 @@ do_config_os_specific() {
         return
     fi
     echo "Setting ${BASE_OS} specific configs..."  | tee -a $PROVISION_LOG
+    # php.ini
+    if [[ $PHP_VERS -eq 7 ]]; then
+        mv /etc/php/7.0/apache2/php.ini /etc/php/7.0/apache2/php.ini.bak >> $PROVISION_LOG 2>&1
+        cp -s /usr/lib/php/7.0/php.ini-development /etc/php/7.0/apache2/php.ini >> $PROVISION_LOG 2>&1
+    else
+        mv /etc/php5/apache2/php.ini /etc/php5/apache2/php.ini.bak >> $PROVISION_LOG 2>&1
+        cp -s /usr/share/php5/php.ini-development /etc/php5/apache2/php.ini >> $PROVISION_LOG 2>&1
+    fi
     # .htaccess
     sed -i "s/AllowOverride None/AllowOverride All/" /etc/apache2/apache2.conf
     # virtualbox shared folder
