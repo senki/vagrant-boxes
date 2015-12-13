@@ -20,9 +20,10 @@ do_install_os_specific() {
         return
     fi
     echo "Installing ${BASE_OS} specific packages..."  | tee -a $PROVISION_LOG
+    apt-get -qy install php5 php5-curl php5-mcrypt php5-intl php5-xsl libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
     debconf-set-selections <<< "mysql-server mysql-server/root_password password vagrant"
     debconf-set-selections <<< "mysql-server mysql-server/root_password_again password vagrant"
-    apt-get -qy install mysql-server-5.6 php5 php5-curl php5-mcrypt php5-intl php5-xsl libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
+    apt-get -qy install mysql-server-5.6 >> $PROVISION_LOG 2>&1
     php5enmod mcrypt >> $PROVISION_LOG 2>&1
     php5enmod curl >> $PROVISION_LOG 2>&1
     php5enmod xsl >> $PROVISION_LOG 2>&1
@@ -35,7 +36,7 @@ do_config_os_specific() {
         echo "Skipping: ${BASE_OS} specific config already in place"  | tee -a $PROVISION_LOG
         return
     fi
-    echo "Configuring ${BASE_OS} specific things..."  | tee -a $PROVISION_LOG
+    echo "Setting ${BASE_OS} specific configs..."  | tee -a $PROVISION_LOG
     # .htaccess
     sed -i "s/AllowOverride None/AllowOverride All/" /etc/apache2/apache2.conf
     # virtualbox shared folder
