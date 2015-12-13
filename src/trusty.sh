@@ -29,9 +29,9 @@ do_install_os_specific() {
     if [[ $PHP_VERS -eq 7 ]]; then
         add-apt-repository -y ppa:ondrej/php-7.0 >> $PROVISION_LOG 2>&1
         apt-get -qy update >> $PROVISION_LOG 2>&1
-        apt-get -qy install mysql-server-5.6 php7.0 php7.0-curl php7.0-mcrypt php7.0-intl libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
+        apt-get -qy install mysql-server-5.6 php7.0 php7.0-mysql php7.0-curl php7.0-mcrypt php7.0-intl libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
     else
-        apt-get -qy install mysql-server-5.6 php5 php7.0-mysql php5-curl php5-mcrypt php5-intl php5-xsl libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
+        apt-get -qy install mysql-server-5.6 php5 php5-curl php5-mcrypt php5-intl php5-xsl libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
         php5enmod mcrypt >> $PROVISION_LOG 2>&1
         php5enmod curl >> $PROVISION_LOG 2>&1
         php5enmod xsl >> $PROVISION_LOG 2>&1

@@ -87,12 +87,12 @@ $mysqli->close();
 <div class="container">
   <div class="row">
     <div class="twelve columns">
-        <h1>Vagrant Boilerplate</h1>
+        <h1>Vagrant Box Info</h1>
     </div>
   </div>
  <div class="row">
     <div class="twelve columns">
-        <pre><code><strong>Hostname:</strong> <?php echo gethostname(); ?><br><strong>Hostname long:</strong> <?php echo $_SERVER['HTTP_HOST']; ?><br><strong>Vagrant Box:</strong> <?php echo file_get_contents("/var/provision/version"); ?></code></pre>
+        <pre><code><strong>Hostname:</strong> <?php echo gethostname(); ?><br><strong>URL:</strong> http://<?php echo $_SERVER['HTTP_HOST']; ?><br><strong>Vagrant Box:</strong> <?php echo file_get_contents("/var/provision/version"); ?></code></pre>
     </div>
   </div>
 
@@ -125,7 +125,7 @@ $mysqli->close();
             curl_close($handle);
         ?>
         <h4>Adminer</h4>
-        <pre><code><strong>Version</strong>: v4.2.3+php7-fix • <a href="adminer/adminer/" target="_blank">Open Adminer</a></code></pre>
+        <pre><code><strong>Version</strong>: v4.2.3+php7-fix • <a href="adminer.php" target="_blank">Open Adminer</a></code></pre>
     </div>
   </div>
 <div class="row">

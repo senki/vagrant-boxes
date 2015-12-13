@@ -41,7 +41,7 @@ if [ $# -eq 0 ]; then
 fi
 
 if [ $1 == "all" ]; then
-    BOX_NAME="precise64"
+    BOX_NAME="precise"
     do_test
     BOX_NAME="trusty"
     do_test
