@@ -8,7 +8,6 @@
 #  $ vagrant provision
 # From the host machine
 
-NOW=$(date +"%Y-%m-%d-%H-%M-%S")
 HOST_CONFIG="/etc/hosts"
 LOCALE_CONFIG="/etc/default/locale"
 MULTITAIL_CONFIG="/etc/multitail.conf"
@@ -228,5 +227,6 @@ main() {
     updatedb >> $PROVISION_LOG 2>&1
     echo "All done"
     echo "==> Box provisioning done at: $(date)" >> $PROVISION_LOG 2>&1
-    cp $PROVISION_LOG /vagrant/log/${BASE_OS}64-$TARGET-$NOW.log
+    NOW=$(date +"%Y-%m-%d-%H-%M-%S")
+    cp $PROVISION_LOG /vagrant/vagrant/log/${BASE_OS}-$TARGET-$NOW.log
 }
