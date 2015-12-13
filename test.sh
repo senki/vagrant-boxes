@@ -58,13 +58,13 @@ fi
 if [ $1 == "all" ]; then
     BOX_NAME="precise64"
     do_test
-    BOX_NAME="trusty64"
+    BOX_NAME="trusty"
     do_test
 elif [ $1 == "precise" ]; then
-    BOX_NAME="precise64"
+    BOX_NAME="precise"
     do_test
 elif [ $1 == "trusty" ]; then
-    BOX_NAME="trusty64"
+    BOX_NAME="trusty"
     do_test
 else
     do_help
