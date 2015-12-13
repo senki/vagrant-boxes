@@ -12,8 +12,6 @@ NOW=$(date +"%Y-%m-%d-%H-%M-%S")
 HOST_CONFIG="/etc/hosts"
 LOCALE_CONFIG="/etc/default/locale"
 MULTITAIL_CONFIG="/etc/multitail.conf"
-SSHD_CONFIG="/etc/ssh/sshd_config"
-TIMEZONE_CONFIG="/etc/timezone"
 VBOX_GA_VERS="5.0.10"
 
 MYSQL_ROOT_PASS="vagrant"
@@ -35,7 +33,7 @@ do_prepare() {
     # remove tty warning
     sed -i "s/^mesg n$/tty -s \&\& mesg n/g" /root/.profile
     # set timezone
-    echo "Europe/Budapest" > $TIMEZONE_CONFIG
+    echo "Europe/Budapest" > /etc/timezone
     dpkg-reconfigure -f noninteractive tzdata >> $PROVISION_LOG 2>&1
     # set locales
     export LANGUAGE="en_US.UTF-8"
@@ -43,7 +41,7 @@ do_prepare() {
     echo 'LANGUAGE="en_US.UTF-8"' >> $LOCALE_CONFIG
     echo 'LC_ALL="en_US.UTF-8"' >> $LOCALE_CONFIG
     # ssh loce not accept from client
-    sed -i "s/^AcceptEnv LANG LC_\*$/\# AcceptEnv LANG LC_\*/g" $SSHD_CONFIG
+    sed -i "s/^AcceptEnv LANG LC_\*$/\# AcceptEnv LANG LC_\*/g" /etc/ssh/sshd_config
     touch /var/provision/prepare
 }
 
@@ -81,8 +79,8 @@ do_update() {
     touch /var/provision/update
 }
 
-do_network() {
-    if [[ -f "/var/provision/network" ]]; then
+do_config_network() {
+    if [[ -f "/var/provision/config-network" ]]; then
         echo "Skipping: Hostname already confugured" | tee -a $PROVISION_LOG
         return
     fi
@@ -90,7 +88,7 @@ do_network() {
     IPADDR=$(/sbin/ifconfig eth1 | awk '/inet / { print $2 }' | sed 's/addr://')
     sed -i "s/^${IPADDR}.*//" $HOST_CONFIG
     echo ${IPADDR} ${HOST_NAME} >> $HOST_CONFIG           # Just to quiet down some error messages
-    touch /var/provision/network
+    touch /var/provision/config-network
 }
 
 do_install_lamp() {
@@ -110,8 +108,8 @@ do_install_lamp() {
     touch /var/provision/install-lamp
 }
 
-do_files() {
-    if [[ -f "/var/provision/files" ]]; then
+do_config_wwwroot() {
+    if [[ -f "/var/provision/config-wwwroot" ]]; then
         echo "Skipping: WWW files already in place..." | tee -a $PROVISION_LOG
         return
     fi
@@ -120,7 +118,7 @@ do_files() {
     rm -rf $WWW_ROOT
     ln -fs /vagrant/test $WWW_ROOT
     service apache2 start >> $PROVISION_LOG 2>&1
-    touch /var/provision/files
+    touch /var/provision/config-wwwroot
 }
 
 do_install_phpmyadmin() {
@@ -193,17 +191,17 @@ main() {
     do_update
     if [[ $TARGET == "test" ]]; then
         echo -n "==> " >> $PROVISION_LOG 2>&1
-        do_network
+        do_config_network
     fi
     echo -n "==> " >> $PROVISION_LOG 2>&1
-    do_install_php
+    do_install_os_specific
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_lamp
     echo -n "==> " >> $PROVISION_LOG 2>&1
-    do_config_apache
+    do_config_os_specific
     if [[ $TARGET == "test" ]]; then
         echo -n "==> " >> $PROVISION_LOG 2>&1
-        do_files
+        do_config_wwwroot
     fi
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_phpmyadmin
