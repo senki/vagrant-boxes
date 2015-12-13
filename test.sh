@@ -16,9 +16,9 @@ do_test() {
     vagrant destroy ${BOX_NAME}_test -f
     echo -e "${GREEN}Building ubuntu ${BOX_NAME} tls x64 test box${NC}"
     vagrant up ${BOX_NAME}_test --provision
-    find ./log -mtime +1 -type f -delete
+    find ./vagrant/log -mtime +1 -type f -delete
     LOGFILE=$(
-        find ./log -type f |
+        find ./vagrant/log -type f |
         sort -t '-' -k3nr -k4nr -k5nr -k6nr -k7nr -k8nr |
         head -1
     )
