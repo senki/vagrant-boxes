@@ -171,6 +171,7 @@ do_install_utilities() {
     rm -rf multitail-6.3
     cp /etc/multitail.conf.new $MULTITAIL_CONFIG
     sed -i "s/^xclip:\/usr\/bin\/xclip$/\# xclip:\/usr\/bin\/xclip/g" $MULTITAIL_CONFIG
+    updatedb >> $PROVISION_LOG 2>&1
     touch /var/provision/install-utilities
 }
 
@@ -201,7 +202,6 @@ main() {
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_vbox_ga
     echo -n "==> " >> $PROVISION_LOG 2>&1
-    do_install_os_specific
     do_update
     if [[ $TARGET == "test" ]]; then
         echo -n "==> " >> $PROVISION_LOG 2>&1
@@ -210,9 +210,11 @@ main() {
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_lamp
     echo -n "==> " >> $PROVISION_LOG 2>&1
-    do_config_mysqlbackuphandler
+    do_install_os_specific
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_config_os_specific
+    echo -n "==> " >> $PROVISION_LOG 2>&1
+    do_config_mysqlbackuphandler
     if [[ $TARGET == "test" ]]; then
         echo -n "==> " >> $PROVISION_LOG 2>&1
         do_config_wwwroot
@@ -223,7 +225,6 @@ main() {
     do_install_utilities
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_save_version
-    updatedb >> $PROVISION_LOG 2>&1
     echo "All done"
     echo "==> Box provisioning done at: $(date)" >> $PROVISION_LOG 2>&1
     NOW=$(date +"%Y-%m-%d-%H-%M-%S")
