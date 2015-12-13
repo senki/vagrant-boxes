@@ -19,7 +19,7 @@ do_test() {
     echo -e "${GREEN}Building ubuntu ${BOX_NAME} tls x64 test box${NC}"
     vagrant up ${BOX_NAME}_test --provision
     do_logcheck
-    open "http://senki-${BOX_NAME}-test.local"
+    open "http://senki-$(echo ${BOX_NAME//_/-})-test.local"
 }
 
 do_help() {
