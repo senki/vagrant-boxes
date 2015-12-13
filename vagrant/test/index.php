@@ -108,10 +108,24 @@ $mysqli->close();
     <div class="one-half column">
         <h4>MySQL</h4>
         <pre><code><strong>MySQL Server:</strong> <?php echo $mysql_serverinfo; ?><br><strong>MySQL Client:</strong> <?php echo $mysql_clientinfo; ?></code></pre>
+        <?php
+            $handle = curl_init('phpmyadmin/');
+            curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
+
+            /* Get the HTML or whatever is linked in $url. */
+            $response = curl_exec($handle);
+
+            /* Check for 404 (file not found). */
+            $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+            if($httpCode == 404) { ?>
         <h4>phpMyAdmin</h4>
         <pre><code><?php echo str_replace("Version", "<strong>Version</strong>", exec('dpkg -s phpmyadmin | grep Version')); ?> • <a href="phpmyadmin/" target="_blank">Open phpMyAdmin</a></code></pre>
-        <ul>
-        </ul>
+            <?php }
+
+            curl_close($handle);
+        ?>
+        <h4>Adminer</h4>
+        <pre><code><strong>Version</strong>: v4.2.3+php7-fix • <a href="adminer/adminer/" target="_blank">Open Adminer</a></code></pre>
     </div>
   </div>
 <div class="row">
