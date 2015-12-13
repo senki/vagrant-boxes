@@ -37,6 +37,10 @@ Vagrant.configure(2) do |config|
     trusty.vm.provision "reload"
     cache_dir = local_cache(trusty.vm.box)
     trusty.vm.synced_folder cache_dir, "/var/cache/apt/archives/"
+    trusty.vm.provider "virtualbox" do |v|
+      v.memory = 1024
+    end
+
   end
 
   config.vm.define "trusty_php7" do |trusty_php7|
@@ -47,6 +51,10 @@ Vagrant.configure(2) do |config|
     trusty_php7.vm.provision "reload"
     cache_dir = local_cache(trusty_php7.vm.box)
     trusty_php7.vm.synced_folder cache_dir, "/var/cache/apt/archives/"
+    trusty_php7.vm.provider "virtualbox" do |v|
+      v.memory = 1024
+    end
+
   end
 
   # test
@@ -69,6 +77,10 @@ Vagrant.configure(2) do |config|
     trusty_test.vm.provision "reload"
     cache_dir = local_cache(trusty_test.vm.box)
     trusty_test.vm.synced_folder cache_dir, "/var/cache/apt/archives/"
+    trusty_test.vm.provider "virtualbox" do |v|
+      v.memory = 1024
+    end
+
   end
 
   config.vm.define "trusty_php7_test" do |trusty_php7_test|
@@ -79,6 +91,10 @@ Vagrant.configure(2) do |config|
     trusty_php7_test.vm.provision "reload"
     cache_dir = local_cache(trusty_php7_test.vm.box)
     trusty_php7_test.vm.synced_folder cache_dir, "/var/cache/apt/archives/"
+    trusty_php7_test.vm.provider "virtualbox" do |v|
+      v.memory = 1024
+    end
+
   end
 
 end
