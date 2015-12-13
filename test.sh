@@ -56,15 +56,15 @@ if [ $# -eq 0 ]; then
 fi
 
 if [ $1 == "all" ]; then
-    BOX_NAME="precise"
+    BOX_NAME="precise64"
     do_test
-    BOX_NAME="trusty"
+    BOX_NAME="trusty64"
     do_test
 elif [ $1 == "precise" ]; then
-    BOX_NAME="precise"
+    BOX_NAME="precise64"
     do_test
 elif [ $1 == "trusty" ]; then
-    BOX_NAME="trusty"
+    BOX_NAME="trusty64"
     do_test
 else
     do_help

@@ -11,7 +11,7 @@
 set -e
 
 BASE_OS="trusty"
-HOST_NAME="lamp-trusty.local"
+HOST_NAME="senki-trusty.local"
 WWW_ROOT="/var/www/html"
 
 do_install_os_specific() {

@@ -11,7 +11,7 @@
 set -e
 
 BASE_OS="precise"
-HOST_NAME="lamp-precise.local"
+HOST_NAME="senki-precise.local"
 WWW_ROOT="/var/www"
 
 do_install_os_specific() {
