@@ -48,7 +48,7 @@ do_build() {
 do_help() {
     echo "Argument missing or invalid!"
     echo ""
-    echo "Usage: build.sh <subcommand>"
+    echo "Usage: $0 <subcommand>"
     echo ""
     echo "Available subcommands:"
     echo "    all            Building all vagrant boxes"

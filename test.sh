@@ -39,13 +39,13 @@ do_test() {
 do_help() {
     echo "Argument missing or invalid!"
     echo ""
-    echo "Usage: test.sh <subcommand>"
+    echo "Usage: $0 <subcommand>"
     echo ""
     echo "Available subcommands:"
     echo "    all            Building all test boxes"
     echo "    precise        Building 'precise64' test box"
     echo "    trusty         Building 'trusty64' test box"
-    echo "    trusty_php7    Building 'trusty64' test box"
+    echo "    trusty_php7    Building 'trusty64' with PHP 7 test box"
     echo ""
 }
 
