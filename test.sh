@@ -33,7 +33,7 @@ do_test() {
     else
         echo -e "${GREEN}No unknown errors in logfile${NC}"
     fi
-    open "http://lamp-${BOX_NAME}-test.local"
+    open "http://senki-${BOX_NAME}-test.local"
 }
 
 do_help() {
