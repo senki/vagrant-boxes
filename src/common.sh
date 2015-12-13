@@ -108,6 +108,20 @@ do_install_lamp() {
     touch /var/provision/install-lamp
 }
 
+do_config_mysqlbackuphandler() {
+    if [[ -f "/var/provision/config-mysqlbackuphandler" ]]; then
+        echo "Skipping: MySQL Data backup/restore handler already configured..." | tee -a $PROVISION_LOG
+        return
+    fi
+    echo "Setting up MySQL Data backup/restore handler..." | tee -a $PROVISION_LOG
+    sed -i "s/^\#general_log/general_log/g" /etc/mysql/my.cnf
+    cp /vagrant/src/mysqlbackuphandler.sh /etc/init.d/mysqlbackuphandler.sh
+    chmod +x /etc/init.d/mysqlbackuphandler.sh
+    update-rc.d mysqlbackuphandler.sh defaults  >> $PROVISION_LOG 2>&1
+    /etc/init.d/mysqlbackuphandler.sh backup >> $PROVISION_LOG 2>&1
+    touch /var/provision/config-mysqlbackuphandler
+}
+
 do_config_wwwroot() {
     if [[ -f "/var/provision/config-wwwroot" ]]; then
         echo "Skipping: WWW files already in place..." | tee -a $PROVISION_LOG
@@ -188,15 +202,17 @@ main() {
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_vbox_ga
     echo -n "==> " >> $PROVISION_LOG 2>&1
+    echo -n "==> " >> $PROVISION_LOG 2>&1
+    do_install_os_specific
     do_update
     if [[ $TARGET == "test" ]]; then
         echo -n "==> " >> $PROVISION_LOG 2>&1
         do_config_network
     fi
     echo -n "==> " >> $PROVISION_LOG 2>&1
-    do_install_os_specific
-    echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_lamp
+    echo -n "==> " >> $PROVISION_LOG 2>&1
+    do_config_mysqlbackuphandler
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_config_os_specific
     if [[ $TARGET == "test" ]]; then

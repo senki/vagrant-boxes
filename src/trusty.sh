@@ -20,8 +20,13 @@ do_install_os_specific() {
         return
     fi
     echo "Installing ${BASE_OS} specific packages..."  | tee -a $PROVISION_LOG
-    apt-get -qy install php5 php5-curl php5-mcrypt libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
+    debconf-set-selections <<< "mysql-server mysql-server/root_password password vagrant"
+    debconf-set-selections <<< "mysql-server mysql-server/root_password_again password vagrant"
+    apt-get -qy install mysql-server-5.6 php5 php5-curl php5-mcrypt php5-intl php5-xsl libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
     php5enmod mcrypt >> $PROVISION_LOG 2>&1
+    php5enmod curl >> $PROVISION_LOG 2>&1
+    php5enmod xsl >> $PROVISION_LOG 2>&1
+    php5enmod intl >> $PROVISION_LOG 2>&1
     touch /var/provision/install-${BASE_OS}-specific
 }
 
