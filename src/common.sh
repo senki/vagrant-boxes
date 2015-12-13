@@ -18,9 +18,23 @@ PHPMYADMIN_APP_PASS="vagrant"
 PROVISION_LOG="/var/log/provision.log"
 
 if [[ $# -ne 0 ]]; then
-    TARGET=$1
+    case $1 in
+        test|prod )
+            TARGET=$1
+            ;;
+        *)
+            echo "Argument missing or invalid! Exiting"
+            exit 1
+            ;;
+    esac
+    if [[ $2 -eq "php7" ]]; then
+        PHP_VERS=7
+    else
+        PHP_VERS=0
+    fi
 else
-    TARGET="prod" # production
+    echo "Argument missing or invalid! Exiting"
+    exit 1
 fi
 
 do_prepare() {
