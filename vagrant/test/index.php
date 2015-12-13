@@ -109,7 +109,7 @@ $mysqli->close();
         <h4>MySQL</h4>
         <pre><code><strong>MySQL Server:</strong> <?php echo $mysql_serverinfo; ?><br><strong>MySQL Client:</strong> <?php echo $mysql_clientinfo; ?></code></pre>
         <?php
-            $handle = curl_init('phpmyadmin/');
+            $handle = curl_init("http://{$_SERVER['HTTP_HOST']}/phpmyadmin/");
             curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
 
             /* Get the HTML or whatever is linked in $url. */
@@ -117,7 +117,7 @@ $mysqli->close();
 
             /* Check for 404 (file not found). */
             $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
-            if($httpCode == 404) { ?>
+            if($httpCode != 404) { ?>
         <h4>phpMyAdmin</h4>
         <pre><code><?php echo str_replace("Version", "<strong>Version</strong>", exec('dpkg -s phpmyadmin | grep Version')); ?> • <a href="phpmyadmin/" target="_blank">Open phpMyAdmin</a></code></pre>
             <?php }
