@@ -11,12 +11,12 @@
 set -e
 
 BASE_OS="trusty"
+
 if [[ $PHP_VERS -eq 7 ]]; then
     HOST_NAME="senki-trusty-php7.local"
 else
     HOST_NAME="senki-trusty.local"
 fi
-WWW_ROOT="/var/www/html"
 
 do_install_os_specific() {
     if [[ -f "/var/provision/install-${BASE_OS}-specific" ]]; then

@@ -29,7 +29,7 @@ if [[ $# -ne 0 ]]; then
     esac
     case $2 in
         5|7)
-            PHP_VERS=$1
+            PHP_VERS=$2
             ;;
         *)
             echo "Argument missing or invalid! Exiting"
@@ -137,19 +137,6 @@ do_config_mysqlbackuphandler() {
     touch /var/provision/config-mysqlbackuphandler
 }
 
-do_config_wwwroot() {
-    if [[ -f "/var/provision/config-wwwroot" ]]; then
-        echo "Skipping: WWW files already in place..." | tee -a $PROVISION_LOG
-        return
-    fi
-    echo "Setting up WWW files..." | tee -a $PROVISION_LOG
-    service apache2 stop >> $PROVISION_LOG 2>&1
-    rm -rf $WWW_ROOT
-    ln -fs /vagrant/vagrant/test $WWW_ROOT
-    service apache2 start >> $PROVISION_LOG 2>&1
-    touch /var/provision/config-wwwroot
-}
-
 do_install_phpmyadmin() {
     if [[ -f "/var/provision/install-phpmyadmin" ]]; then
         echo "Skipping: phpMyAdmin already installed" | tee -a $PROVISION_LOG
@@ -231,11 +218,7 @@ main() {
     do_config_os_specific
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_config_mysqlbackuphandler
-    if [[ $TARGET -eq "test" ]]; then
-        echo -n "==> " >> $PROVISION_LOG 2>&1
-        do_config_wwwroot
-    fi
-    if [[ $PHP_VERS -ne 7 ]]; then
+    if [[ $PHP_VERS -ne "7" ]]; then
         echo -n "==> " >> $PROVISION_LOG 2>&1
         do_install_phpmyadmin
     fi
