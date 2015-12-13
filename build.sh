@@ -54,6 +54,7 @@ do_help() {
     echo "    all            Building all vagrant boxes"
     echo "    precise        Building 'precise' x64 vagrant box"
     echo "    trusty         Building 'trusty' x64 vagrant box"
+    echo "    trusty_php7    Building 'trusty' x64 with PHP v7 vagrant box"
     echo ""
 }
 
@@ -67,11 +68,16 @@ if [ $1 == "all" ]; then
     do_build
     BOX_NAME="trusty"
     do_build
+    BOX_NAME="trusty_php7"
+    do_build
 elif [ $1 == "precise" ]; then
     BOX_NAME="precise"
     do_build
 elif [ $1 == "trusty" ]; then
     BOX_NAME="trusty"
+    do_build
+elif [ $1 == "trusty_php7" ]; then
+    BOX_NAME="trusty_php7"
     do_build
 else
     do_help

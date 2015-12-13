@@ -45,6 +45,7 @@ do_help() {
     echo "    all            Building all test boxes"
     echo "    precise        Building 'precise64' test box"
     echo "    trusty         Building 'trusty64' test box"
+    echo "    trusty_php7    Building 'trusty64' test box"
     echo ""
 }
 
@@ -60,11 +61,16 @@ if [ $1 == "all" ]; then
     do_test
     BOX_NAME="trusty"
     do_test
+    BOX_NAME="trusty_php7"
+    do_test
 elif [ $1 == "precise" ]; then
     BOX_NAME="precise"
     do_test
 elif [ $1 == "trusty" ]; then
     BOX_NAME="trusty"
+    do_test
+elif [ $1 == "trusty_php7" ]; then
+    BOX_NAME="trusty_php7"
     do_test
 else
     do_help

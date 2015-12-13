@@ -140,7 +140,7 @@ do_install_phpmyadmin() {
         return
     fi
     echo "Installing phpMyAdmin..." | tee -a $PROVISION_LOG
-    if [[ $BASE_OS == 'trusty' ]]; then
+    if [[ $BASE_OS != 'precise' ]]; then
         add-apt-repository -y ppa:nijel/phpmyadmin >> $PROVISION_LOG 2>&1
         apt-get -qy update >> $PROVISION_LOG 2>&1
     fi

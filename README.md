@@ -16,6 +16,13 @@ Currently only with VirtualBox provider.
 - PHP 5.5.9
 - PHPMyAdmin 4.2.3
 
+## senki/trusty-php7
+- Ubuntu Trusty x64 (14.04 LTS)
+- Apache 2.4.7 
+- MySQL 5.6.27
+- PHP 7.0.0
+- PHPMyAdmin 4.5.2
+
 ## usage
 - Download/clone repository
 - `cd` to folder

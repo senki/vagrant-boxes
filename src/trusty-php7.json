@@ -1,7 +1,7 @@
 {
-    "name": "senki/trusty",
-    "description": "Ubuntu Trusty x64 LAMP Dev Environment with PHP v5.5 & PHPMyAdmin",
-    "short_description": "Trusty LAMP Dev Environment",
+    "name": "senki/trusty-php7",
+    "description": "Ubuntu Trusty x64 LAMP Dev Environment with PHP v7 & PHPMyAdmin",
+    "short_description": "Trusty LAMP PHP v7 Dev Environment",
     "versions": [{
         "version": "1.2.0",
         "status": "active",
@@ -9,7 +9,7 @@
         "description_markdown": "Based on ubuntu/trusty64",
         "providers": [{
             "name": "virtualbox",
-            "url": "dist/trusty.box"
+            "url": "dist/trusty_php7.box"
         }]
     }]
 }
