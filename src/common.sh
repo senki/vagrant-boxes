@@ -54,11 +54,11 @@ do_install_vbox_ga() {
     apt-get -qy purge virtualbox-\* >> $PROVISION_LOG 2>&1
     apt-get -qy autoremove >> $PROVISION_LOG 2>&1
     apt-get -qy install build-essential linux-headers-generic dkms >> $PROVISION_LOG 2>&1
-    if [[ ! -f "/vagrant/vbox_ga_$VBOX_GA_VERS.iso" ]]; then
-        curl -s -L -o /vagrant/vbox_ga_$VBOX_GA_VERS.iso http://download.virtualbox.org/virtualbox/$VBOX_GA_VERS/VBoxGuestAdditions_$VBOX_GA_VERS.iso >> $PROVISION_LOG 2>&1
+    if [[ ! -f "/vagrant/src/vbox_ga_$VBOX_GA_VERS.iso" ]]; then
+        curl -s -L -o /vagrant/src/vbox_ga_$VBOX_GA_VERS.iso http://download.virtualbox.org/virtualbox/$VBOX_GA_VERS/VBoxGuestAdditions_$VBOX_GA_VERS.iso >> $PROVISION_LOG 2>&1
     fi
     mkdir /media/vbox_ga_$VBOX_GA_VERS
-    mount -o loop /vagrant/vbox_ga_$VBOX_GA_VERS.iso /media/vbox_ga_$VBOX_GA_VERS >> $PROVISION_LOG 2>&1
+    mount -o loop /vagrant/src/vbox_ga_$VBOX_GA_VERS.iso /media/vbox_ga_$VBOX_GA_VERS >> $PROVISION_LOG 2>&1
     export REMOVE_INSTALLATION_DIR=0
     sh /media/vbox_ga_$VBOX_GA_VERS/VBoxLinuxAdditions.run --nox11 >> $PROVISION_LOG 2>&1
     umount /media/vbox_ga_$VBOX_GA_VERS >> $PROVISION_LOG 2>&1
@@ -129,7 +129,7 @@ do_config_wwwroot() {
     echo "Setting up WWW files..." | tee -a $PROVISION_LOG
     service apache2 stop >> $PROVISION_LOG 2>&1
     rm -rf $WWW_ROOT
-    ln -fs /vagrant/test $WWW_ROOT
+    ln -fs /vagrant/vagrant/test $WWW_ROOT
     service apache2 start >> $PROVISION_LOG 2>&1
     touch /var/provision/config-wwwroot
 }
