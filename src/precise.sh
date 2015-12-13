@@ -15,7 +15,7 @@ HOST_NAME="senki-precise.local"
 WWW_ROOT="/var/www"
 
 do_install_os_specific() {
-    if [ -f "/var/provision/install-${BASE_OS}-specific" ]; then
+    if [[ -f "/var/provision/install-${BASE_OS}-specific" ]]; then
         echo "Skipping: ${BASE_OS} specific packages already installed"  | tee -a $PROVISION_LOG
         return
     fi
@@ -31,7 +31,7 @@ do_install_os_specific() {
 }
 
 do_config_os_specific() {
-    if [ -f "/var/provision/config-${BASE_OS}-specific" ]; then
+    if [[ -f "/var/provision/config-${BASE_OS}-specific" ]]; then
         echo "Skipping: ${BASE_OS} specific config already in place"  | tee -a $PROVISION_LOG
         return
     fi

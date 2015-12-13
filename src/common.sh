@@ -19,7 +19,7 @@ PROVISION_LOG="/var/log/provision.log"
 
 if [[ $# -ne 0 ]]; then
     case $1 in
-        test|prod )
+        test|prod)
             TARGET=$1
             ;;
         *)
@@ -27,11 +27,15 @@ if [[ $# -ne 0 ]]; then
             exit 1
             ;;
     esac
-    if [[ $2 -eq "php7" ]]; then
-        PHP_VERS=7
-    else
-        PHP_VERS=0
-    fi
+    case $2 in
+        5|7)
+            PHP_VERS=$1
+            ;;
+        *)
+            echo "Argument missing or invalid! Exiting"
+            exit 1
+            ;;
+    esac
 else
     echo "Argument missing or invalid! Exiting"
     exit 1
@@ -227,11 +231,11 @@ main() {
     do_config_os_specific
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_config_mysqlbackuphandler
-    if [[ $TARGET == "test" ]]; then
+    if [[ $TARGET -eq "test" ]]; then
         echo -n "==> " >> $PROVISION_LOG 2>&1
         do_config_wwwroot
     fi
-    if [[ $PHP_VERS != 7 ]]; then
+    if [[ $PHP_VERS -ne 7 ]]; then
         echo -n "==> " >> $PROVISION_LOG 2>&1
         do_install_phpmyadmin
     fi
