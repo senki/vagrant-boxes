@@ -34,7 +34,7 @@ do_build() {
 do_help() {
     echo "Argument missing or invalid!"
     echo ""
-    echo "Usage: $0 <subcommand>"
+    echo "Usage: $0 [subcommand] <--no-package>"
     echo ""
     echo "Available subcommands:"
     echo "    all            Building all vagrant boxes"
@@ -49,24 +49,24 @@ if [ $# -eq 0 ]; then
     exit
 fi
 
-if [ $1 == "all" ]; then
-    BOX_NAME="precise"
-    do_build
-    BOX_NAME="trusty"
-    do_build
-    BOX_NAME="trusty_php7"
-    do_build
-elif [ $1 == "precise" ]; then
-    BOX_NAME="precise"
-    do_build
-elif [ $1 == "trusty" ]; then
-    BOX_NAME="trusty"
-    do_build
-elif [ $1 == "trusty_php7" ]; then
-    BOX_NAME="trusty_php7"
-    do_build
-else
-    do_help
-    exit
-fi
+case $1 in
+    all)
+        BOX_NAME="precise"
+        do_build
+        BOX_NAME="trusty"
+        do_build
+        BOX_NAME="trusty_php7"
+        do_build
+        ;;
+    precise|trusty|trusty_php7)
+        BOX_NAME="${1}"
+        do_build
+        ;;
+    *)
+        echo "Argument missing or invalid! Exiting"
+        exit 1
+        ;;
+esac
+
+echo -e "${GREEN}test.sh done${NC}"
 echo -e "${GREEN}build.sh done${NC}"
