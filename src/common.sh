@@ -201,7 +201,6 @@ main() {
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_vbox_ga
     echo -n "==> " >> $PROVISION_LOG 2>&1
-    echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_os_specific
     do_update
     if [[ $TARGET == "test" ]]; then
