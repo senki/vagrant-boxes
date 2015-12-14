@@ -25,26 +25,22 @@ do_build() {
     if [ -f "dist/${BOX_NAME}.box" ]; then
         rm dist/${BOX_NAME}.box
     fi
-    if [ $2 == "--no-package" ]; then
-        vagrant package ${BOX_NAME} --output dist/${BOX_NAME}.box
-        vagrant box add src/${BOX_NAME}.json
-        rm dist/${BOX_NAME}.box
-        vagrant destroy ${BOX_NAME} -f
-    fi
+    vagrant package ${BOX_NAME} --output dist/${BOX_NAME}.box
+    vagrant box add src/${BOX_NAME}.json
+    rm dist/${BOX_NAME}.box
+    vagrant destroy ${BOX_NAME} -f
 }
 
 do_help() {
     echo "Argument missing or invalid!"
     echo ""
-    echo "Usage: $0 [subcommand] <--no-package>"
+    echo "Usage: $0 [subcommand]"
     echo ""
     echo "Available subcommands:"
     echo "    all            Building all vagrant boxes"
     echo "    precise        Building 'precise' x64 vagrant box"
     echo "    trusty         Building 'trusty' x64 vagrant box"
     echo "    trusty_php7    Building 'trusty' x64 with PHP v7 vagrant box"
-    echo ""
-    echo "    --no-package   only 'vagrant up' without packaging"
     echo ""
 }
 
