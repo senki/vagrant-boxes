@@ -2,12 +2,10 @@
 
 ### BEGIN INIT INFO
 # Provides:          mysqlbackuphandler.sh
-# Required-Start:    $remote_fs $syslog
-# Required-Stop:     $remote_fs $syslog
+# Required-Start:    vboxadd-service $remote_fs $syslog
+# Required-Stop:     vboxadd-service $remote_fs $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# X-Start-Before:    mysql
-# X-Stop-After:      mysql
 # Short-Description: Backup and restore MySQL data directory.
 # Description:       Use in your Vagrant box.
 ### END INIT INFO
