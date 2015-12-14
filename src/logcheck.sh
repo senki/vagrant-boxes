@@ -8,7 +8,7 @@
 
 
 do_logcheck() {
-    find ./vagrant/log -mtime +1 -type f -delete
+    find ./vagrant/log -type f \( ! -iname "*.gitignore" \) -mtime +1 -delete
     LOGFILE=$(
         find ./vagrant/log -type f |
         sort -t '-' -k3nr -k4nr -k5nr -k6nr -k7nr -k8nr |

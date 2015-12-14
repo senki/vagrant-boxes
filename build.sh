@@ -15,6 +15,7 @@ source src/logcheck.sh
 
 do_build() {
     echo -e "${GREEN}Building ubuntu ${BOX_NAME} tls x64 vagrant box${NC}"
+    find ./vagrant/db -type f \( ! -iname "*.gitignore" \) -mtime +1 -delete
     vagrant box remove senki/${BOX_NAME} -f
     vagrant destroy ${BOX_NAME} -f
     vagrant up ${BOX_NAME}
@@ -68,5 +69,4 @@ case $1 in
         ;;
 esac
 
-echo -e "${GREEN}test.sh done${NC}"
 echo -e "${GREEN}build.sh done${NC}"
