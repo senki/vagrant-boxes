@@ -163,8 +163,8 @@ do_install_utilities() {
         return
     fi
     echo "Installing utility softwares..." | tee -a $PROVISION_LOG
-    # tree
-    apt-get -qy install tree >> $PROVISION_LOG 2>&1
+    # htop, tree
+    apt-get -qy install htop tree >> $PROVISION_LOG 2>&1
     # multitail
     apt-get -qy install libncursesw5-dev >> $PROVISION_LOG 2>&1
     curl -s -L -O https://github.com/flok99/multitail/archive/v6.3.tar.gz >> $PROVISION_LOG 2>&1
