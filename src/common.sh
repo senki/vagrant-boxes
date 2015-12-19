@@ -70,7 +70,6 @@ do_install_vbox_ga() {
     echo "Installing VirtualBox Guest Additions v$VBOX_GA_VERS..." | tee -a $PROVISION_LOG
     apt-get -qy remove virtualbox-\* >> $PROVISION_LOG 2>&1
     apt-get -qy purge virtualbox-\* >> $PROVISION_LOG 2>&1
-    apt-get -qy autoremove >> $PROVISION_LOG 2>&1
     apt-get -qy install build-essential linux-headers-generic dkms >> $PROVISION_LOG 2>&1
     if [[ ! -f "/vagrant/src/vbox_ga_$VBOX_GA_VERS.iso" ]]; then
         curl -s -L -o /vagrant/src/vbox_ga_$VBOX_GA_VERS.iso http://download.virtualbox.org/virtualbox/$VBOX_GA_VERS/VBoxGuestAdditions_$VBOX_GA_VERS.iso >> $PROVISION_LOG 2>&1
@@ -223,6 +222,9 @@ main() {
     fi
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_utilities
+    echo -n "==> Cleanup" >> $PROVISION_LOG 2>&1
+    apt-get -qy autoremove >> $PROVISION_LOG 2>&1
+    apt-get -qy autocleanup >> $PROVISION_LOG 2>&1
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_save_version
     echo "All done"
