@@ -222,9 +222,10 @@ main() {
     fi
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_utilities
-    echo -n "==> Cleanup" >> $PROVISION_LOG 2>&1
+    echo -n "==>" >> $PROVISION_LOG 2>&1
+    echo -n "Cleanup" | tee -a $PROVISION_LOG
     apt-get -qy autoremove >> $PROVISION_LOG 2>&1
-    apt-get -qy autocleanup >> $PROVISION_LOG 2>&1
+    apt-get -qy autoclean >> $PROVISION_LOG 2>&1
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_save_version
     echo "All done"
