@@ -163,8 +163,8 @@ do_install_utilities() {
         return
     fi
     echo "Installing utility softwares..." | tee -a $PROVISION_LOG
-    # htop, tree
-    apt-get -qy install htop tree >> $PROVISION_LOG 2>&1
+    # ruby, htop, tree
+    apt-get -qy install ruby1.9.1 htop tree >> $PROVISION_LOG 2>&1
     # multitail
     apt-get -qy install libncursesw5-dev >> $PROVISION_LOG 2>&1
     curl -s -L -O https://github.com/flok99/multitail/archive/v6.3.tar.gz >> $PROVISION_LOG 2>&1
@@ -185,7 +185,6 @@ do_save_version() {
         return
     fi
     echo "Saving version info to file..." | tee -a $PROVISION_LOG
-    apt-get -qy install ruby1.9.1 >> $PROVISION_LOG 2>&1
     BOX_NAME=$(cat /vagrant/src/${BASE_OS}.json | ruby1.9.1 -rjson -e 'j = JSON.parse(STDIN.read); puts j["name"]')
     BOX_VERSION=$(cat /vagrant/src/${BASE_OS}.json | ruby1.9.1 -rjson -e 'j = JSON.parse(STDIN.read); puts j["versions"][0]["version"]')
     echo "$BOX_NAME v$BOX_VERSION" > /var/provision/version
