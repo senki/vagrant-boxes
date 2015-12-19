@@ -15,8 +15,10 @@ source src/logcheck.sh
 
 do_build() {
     echo -e "${GREEN}Building ubuntu ${BOX_NAME} tls x64 vagrant box${NC}"
-    find ./vagrant/db -type f \( ! -iname "*.gitignore" \) -mtime +1 -delete
+    find ./vagrant/db -type f \( ! -iname "*.gitignore" \) -delete
+    set +e
     vagrant box remove senki/$(echo ${BOX_NAME//_/-}) -f
+    set -e
     vagrant destroy ${BOX_NAME} -f
     vagrant up ${BOX_NAME}
     do_logcheck

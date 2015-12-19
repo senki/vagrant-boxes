@@ -70,7 +70,6 @@ do_install_vbox_ga() {
     echo "Installing VirtualBox Guest Additions v$VBOX_GA_VERS..." | tee -a $PROVISION_LOG
     apt-get -qy remove virtualbox-\* >> $PROVISION_LOG 2>&1
     apt-get -qy purge virtualbox-\* >> $PROVISION_LOG 2>&1
-    apt-get -qy autoremove >> $PROVISION_LOG 2>&1
     apt-get -qy install build-essential linux-headers-generic dkms >> $PROVISION_LOG 2>&1
     if [[ ! -f "/vagrant/src/vbox_ga_$VBOX_GA_VERS.iso" ]]; then
         curl -s -L -o /vagrant/src/vbox_ga_$VBOX_GA_VERS.iso http://download.virtualbox.org/virtualbox/$VBOX_GA_VERS/VBoxGuestAdditions_$VBOX_GA_VERS.iso >> $PROVISION_LOG 2>&1
@@ -120,6 +119,7 @@ do_install_lamp() {
     apt-get -qy install lamp-server^ >> $PROVISION_LOG 2>&1
     a2enmod rewrite >> $PROVISION_LOG 2>&1
     service apache2 restart >> $PROVISION_LOG 2>&1
+    sed -i "s/^\#general_log/general_log/g" /etc/mysql/my.cnf
     touch /var/provision/install-lamp
 }
 
@@ -129,7 +129,6 @@ do_config_mysqlbackuphandler() {
         return
     fi
     echo "Setting up MySQL Data backup/restore handler..." | tee -a $PROVISION_LOG
-    sed -i "s/^\#general_log/general_log/g" /etc/mysql/my.cnf
     cp /vagrant/src/mysqlbackuphandler.sh /etc/init.d/mysqlbackuphandler.sh
     chmod +x /etc/init.d/mysqlbackuphandler.sh
     update-rc.d mysqlbackuphandler.sh defaults  >> $PROVISION_LOG 2>&1
@@ -163,8 +162,8 @@ do_install_utilities() {
         return
     fi
     echo "Installing utility softwares..." | tee -a $PROVISION_LOG
-    # tree
-    apt-get -qy install tree >> $PROVISION_LOG 2>&1
+    # ruby, htop, tree
+    apt-get -qy install ruby1.9.1 htop tree >> $PROVISION_LOG 2>&1
     # multitail
     apt-get -qy install libncursesw5-dev >> $PROVISION_LOG 2>&1
     curl -s -L -O https://github.com/flok99/multitail/archive/v6.3.tar.gz >> $PROVISION_LOG 2>&1
@@ -181,11 +180,10 @@ do_install_utilities() {
 do_save_version() {
     if [[ -f "/var/provision/version" ]]; then
         echo "Version info from already stored:" | tee -a $PROVISION_LOG
-        echo  /var/provision/version | tee -a $PROVISION_LOG
+        echo "/var/provision/version: \"$(cat /var/provision/version)\"" | tee -a $PROVISION_LOG
         return
     fi
     echo "Saving version info to file..." | tee -a $PROVISION_LOG
-    apt-get -qy install ruby1.9.1 >> $PROVISION_LOG 2>&1
     BOX_NAME=$(cat /vagrant/src/${BASE_OS}.json | ruby1.9.1 -rjson -e 'j = JSON.parse(STDIN.read); puts j["name"]')
     BOX_VERSION=$(cat /vagrant/src/${BASE_OS}.json | ruby1.9.1 -rjson -e 'j = JSON.parse(STDIN.read); puts j["versions"][0]["version"]')
     echo "$BOX_NAME v$BOX_VERSION" > /var/provision/version
@@ -224,6 +222,10 @@ main() {
     fi
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_utilities
+    echo -n "==>" >> $PROVISION_LOG 2>&1
+    echo -n "Cleanup" | tee -a $PROVISION_LOG
+    apt-get -qy autoremove >> $PROVISION_LOG 2>&1
+    apt-get -qy autoclean >> $PROVISION_LOG 2>&1
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_save_version
     echo "All done"
