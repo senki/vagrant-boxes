@@ -119,6 +119,7 @@ do_install_lamp() {
     apt-get -qy install lamp-server^ >> $PROVISION_LOG 2>&1
     a2enmod rewrite >> $PROVISION_LOG 2>&1
     service apache2 restart >> $PROVISION_LOG 2>&1
+    sed -i "s/^\#general_log/general_log/g" /etc/mysql/my.cnf
     touch /var/provision/install-lamp
 }
 
@@ -128,7 +129,6 @@ do_config_mysqlbackuphandler() {
         return
     fi
     echo "Setting up MySQL Data backup/restore handler..." | tee -a $PROVISION_LOG
-    sed -i "s/^\#general_log/general_log/g" /etc/mysql/my.cnf
     cp /vagrant/src/mysqlbackuphandler.sh /etc/init.d/mysqlbackuphandler.sh
     chmod +x /etc/init.d/mysqlbackuphandler.sh
     update-rc.d mysqlbackuphandler.sh defaults  >> $PROVISION_LOG 2>&1
