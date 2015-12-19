@@ -3,7 +3,7 @@
     "description": "Ubuntu Trusty x64 LAMP Dev Environment with PHP v5.5 & PHPMyAdmin",
     "short_description": "Trusty LAMP Dev Environment",
     "versions": [{
-        "version": "1.2.0",
+        "version": "1.2.1",
         "status": "active",
         "description_html": "<p>Based on ubuntu/trusty64</p>",
         "description_markdown": "Based on ubuntu/trusty64",

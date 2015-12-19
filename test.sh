@@ -15,7 +15,7 @@ source src/logcheck.sh
 
 do_test() {
     echo -e "${GREEN}Destroying previously ubuntu ${BOX_NAME} tls x64 test box - if any${NC}"
-    find ./vagrant/db -type f \( ! -iname "*.gitignore" \) -mtime +1 -delete
+    find ./vagrant/db -type f \( ! -iname "*.gitignore" \) -delete
     vagrant destroy ${BOX_NAME}_test -f
     echo -e "${GREEN}Building ubuntu ${BOX_NAME} tls x64 test box${NC}"
     vagrant up ${BOX_NAME}_test --provision

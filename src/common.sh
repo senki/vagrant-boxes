@@ -119,6 +119,7 @@ do_install_lamp() {
     apt-get -qy install lamp-server^ >> $PROVISION_LOG 2>&1
     a2enmod rewrite >> $PROVISION_LOG 2>&1
     service apache2 restart >> $PROVISION_LOG 2>&1
+    sed -i "s/^\#general_log/general_log/g" /etc/mysql/my.cnf
     touch /var/provision/install-lamp
 }
 
@@ -128,7 +129,6 @@ do_config_mysqlbackuphandler() {
         return
     fi
     echo "Setting up MySQL Data backup/restore handler..." | tee -a $PROVISION_LOG
-    sed -i "s/^\#general_log/general_log/g" /etc/mysql/my.cnf
     cp /vagrant/src/mysqlbackuphandler.sh /etc/init.d/mysqlbackuphandler.sh
     chmod +x /etc/init.d/mysqlbackuphandler.sh
     update-rc.d mysqlbackuphandler.sh defaults  >> $PROVISION_LOG 2>&1
@@ -180,7 +180,7 @@ do_install_utilities() {
 do_save_version() {
     if [[ -f "/var/provision/version" ]]; then
         echo "Version info from already stored:" | tee -a $PROVISION_LOG
-        echo  /var/provision/version | tee -a $PROVISION_LOG
+        echo "/var/provision/version: \"$(cat /var/provision/version)\"" | tee -a $PROVISION_LOG
         return
     fi
     echo "Saving version info to file..." | tee -a $PROVISION_LOG
@@ -222,9 +222,10 @@ main() {
     fi
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_utilities
-    echo -n "==> Cleanup" >> $PROVISION_LOG 2>&1
+    echo -n "==>" >> $PROVISION_LOG 2>&1
+    echo -n "Cleanup" | tee -a $PROVISION_LOG
     apt-get -qy autoremove >> $PROVISION_LOG 2>&1
-    apt-get -qy autocleanup >> $PROVISION_LOG 2>&1
+    apt-get -qy autoclean >> $PROVISION_LOG 2>&1
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_save_version
     echo "All done"
