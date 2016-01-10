@@ -1,5 +1,5 @@
-/.vagrant
-/dist
-/logo.png
-/src/vbox_ga_*
-/vagrant/test/linfo
+.vagrant
+dist
+logo.png
+src/vbox_ga_*
+vagrant/test/linfo

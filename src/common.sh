@@ -11,7 +11,7 @@
 HOST_CONFIG="/etc/hosts"
 LOCALE_CONFIG="/etc/default/locale"
 MULTITAIL_CONFIG="/etc/multitail.conf"
-VBOX_GA_VERS="5.0.10"
+VBOX_GA_VERS="5.0.12"
 
 MYSQL_ROOT_PASS="vagrant"
 PHPMYADMIN_APP_PASS="vagrant"

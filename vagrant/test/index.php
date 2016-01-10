@@ -1,5 +1,6 @@
 <?php
-function interpret_php_uname(){
+function interpret_php_uname()
+{
     $release_info["os_name"] = php_uname('s');
     $release_info["uname_version_info"] = php_uname('v');
     $release_info["machine_type"] = php_uname('m');
@@ -30,9 +31,9 @@ function interpret_php_uname(){
     $distribution["15.04"]=array("Vivid Vervet", "3.19.3");
     $distribution["15.10"]=array("Wily Werewolf", "4.2");
 
-    foreach($distribution as $distribution=>$name_kernel){
+    foreach ($distribution as $distribution => $name_kernel) {
         list($name,$kernel)=$name_kernel;
-        if(version_compare($release_info["kernel"],$kernel,'>=')) {
+        if (version_compare($release_info["kernel"], $kernel, '>=')) {
             $release_info["ubuntu_distribution"]=$distribution;
             $release_info["ubuntu_distribution_name"]=$name;
         }
@@ -48,8 +49,28 @@ if (mysqli_connect_errno()) {
     exit();
 }
 $mysql_serverinfo=$mysqli->server_info;
-$mysql_clientinfo=$mysqli->client_info;;
+$mysql_clientinfo=$mysqli->client_info;
 $mysqli->close();
+
+$handle = curl_init("http://{$_SERVER['HTTP_HOST']}/phpmyadmin/");
+curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($handle);
+$httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+curl_close($handle);
+$isPhpmyadmin = ($httpCode == 404) ? false : true;
+$handle = curl_init("http://{$_SERVER['HTTP_HOST']}/linfo/");
+curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($handle);
+$httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+curl_close($handle);
+$islinfo = ($httpCode == 404) ? false : true;
+$handle = curl_init("http://{$_SERVER['HTTP_HOST']}/adminer.php");
+curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($handle);
+$httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+curl_close($handle);
+$isAdminer = ($httpCode == 404) ? false : true;
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -92,7 +113,7 @@ $mysqli->close();
   </div>
  <div class="row">
     <div class="twelve columns">
-        <pre><code><a href="linfo/" target="_blank">Linfo</a><br><strong>Hostname:</strong> <?php echo gethostname(); ?><br><strong>URL:</strong> http://<?php echo $_SERVER['HTTP_HOST']; ?><br><strong>Vagrant Box:</strong> <?php echo file_get_contents("/var/provision/version"); ?></code></pre>
+        <pre><code><?= ($islinfo) ? '<a href="linfo/" target="_blank">Linfo</a><br>': '' ?><strong>Hostname:</strong> <?php echo gethostname(); ?><br><strong>URL:</strong> http://<?php echo $_SERVER['HTTP_HOST']; ?><br><strong>Vagrant Box:</strong> <?php echo file_get_contents("/var/provision/version"); ?></code></pre>
     </div>
   </div>
 
@@ -100,32 +121,22 @@ $mysqli->close();
     <div class="one-half column">
         <h4>OS</h4>
         <pre><code><?php
-                foreach ($release_info as $key => $value) {
-                    echo "<strong>$key:</strong> $value<br>";
-                }
-            ?></code></pre>
+        foreach ($release_info as $key => $value) {
+            echo "<strong>$key:</strong> $value<br>";
+        }
+        ?></code></pre>
     </div>
     <div class="one-half column">
         <h4>MySQL</h4>
         <pre><code><strong>MySQL Server:</strong> <?php echo $mysql_serverinfo; ?><br><strong>MySQL Client:</strong> <?php echo $mysql_clientinfo; ?></code></pre>
-        <?php
-            $handle = curl_init("http://{$_SERVER['HTTP_HOST']}/phpmyadmin/");
-            curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
-
-            /* Get the HTML or whatever is linked in $url. */
-            $response = curl_exec($handle);
-
-            /* Check for 404 (file not found). */
-            $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
-            if($httpCode != 404) { ?>
+        <?php if ($isPhpmyadmin) : ?>
         <h4>phpMyAdmin</h4>
         <pre><code><?php echo str_replace("Version", "<strong>Version</strong>", exec('dpkg -s phpmyadmin | grep Version')); ?> • <a href="phpmyadmin/" target="_blank">phpMyAdmin</a></code></pre>
-            <?php }
-
-            curl_close($handle);
-        ?>
+        <?php endif; ?>
+        <?php if ($isAdminer) : ?>
         <h4>Adminer</h4>
         <pre><code><strong>Version</strong>: v4.2.3+php7-fix • <a href="adminer.php" target="_blank">Adminer</a></code></pre>
+        <?php endif; ?>
     </div>
   </div>
 <div class="row">
@@ -145,9 +156,12 @@ $mysqli->close();
   </div>
 <div class="row">
     <div class="twelwe columns">
-        <p><strong>Boilerplate</strong> © 2015 Csaba Maulis</p>
+        <p><strong>vagrant-boxes</strong> © 2015 Csaba Maulis</p>
         <p><em>Intentionally PHP errors:</em>
-        <?php ecce; homo;?>
+        <?php
+            ecce;
+            homo
+        ?>
     </div>
   </div>
 
