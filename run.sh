@@ -139,4 +139,4 @@ case $2 in
         ;;
 esac
 
-echo -e "${GREEN}build.sh done${NC}"
+echo -e "${GREEN}${0} done${NC}"
