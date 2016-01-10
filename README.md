@@ -1,59 +1,81 @@
-# vagrant-lamp-base
-Basic LAMP Vagrant machines.  
+# vagrant-boxes
+
+Create Basic Ubuntu LAMP Vagrant boxes.  
 Currently only with VirtualBox provider.
 
-## senki/precise
-- Ubuntu Precise x64 (12.04 LTS)
-- Apache 2.2.22 
-- MySQL 5.5.46
-- PHP  5.4.45
-- PHPMyAdmin 4.2.3
+>WIP – Currently `senki/[boxes]` not available online for downloads.
 
-## senki/trusty
-- Ubuntu Trusty x64 (14.04 LTS)
-- Apache 2.4.7 
-- MySQL 5.6.27
-- PHP 5.5.9
-- PHPMyAdmin 4.2.3
+## Features
 
-## senki/trusty-php7
-- Ubuntu Trusty x64 (14.04 LTS)
-- Apache 2.4.7 
-- MySQL 5.6.27
-- PHP 7.0.0
-- PHPMyAdmin 4.5.2
+- Install user configurable VirtualBox additions
+- Automatically backup `/var/lib/mysql/` dir on guest shutdown to `vagrant/db/mysql-$NOW.tar.gz`
+- Manually backup or restore `/var/lib/mysql/` dir with  `/etc/init.d/mysqlbackuphandler.sh`
+- Provision 'check' files: `/var/provision/*`, to safely re-provison boxes.
+- Provision logs:
+  - guest: `/var/log/provision.log`
+  - host: `vagrant/log/$HOST_NAME-$NOW.log`
+- Box version string saved in guest's `/var/provision/version` file
+- Installed utilities: ruby, htop, tree, multitail
 
-## usage
-- Download/clone repository
-- `cd` to folder
 
-### build
-1. type `build.sh` ...wait for finish
-2. You have a `senki/precise64` & `senki/trusty64` machine imported to vagrant
-3. check with `vagrant box list`
+## Boxes
 
-### test
-1. type `test.sh` ...wait for finish
-2. You have a `lamp-precise-test.local` & `lamp-trusty-test-local` machine up & running
+1. **senki/precise**
+  - Ubuntu Precise x64 (12.04 LTS)
+  - Apache 2.2.22
+  - MySQL 5.5.46
+  - PHP  5.4.45
+  - PHPMyAdmin 4.2.3
+2. **senki/trusty**
+  - Ubuntu Trusty x64 (14.04 LTS)
+  - Apache 2.4.7
+  - MySQL 5.6.27
+  - PHP 5.5.9
+  - PHPMyAdmin 4.2.3
+3. **senki/trusty-php7**
+  - Ubuntu Trusty x64 (14.04 LTS)
+  - Apache 2.4.7
+  - MySQL 5.6.27
+  - PHP 7.0.0
+  - PHPMyAdmin 4.5.2
 
-## pre-requirements on OS X
-- git (recommended via homebrew: `brew install git`)
-    - [homebrew](http://brew.sh)
-    - [SourceTree](https://www.sourcetreeapp.com) (optional GUI for git)
-- [Vagrant](https://www.vagrantup.com)
-    - [vagrant-reload](https://github.com/aidanns/vagrant-reload)
-    - [VirtualBox](https://www.virtualbox.org)
+## Usage
 
-## version history
-For details, see git  
+Use the included `run.sh` script:
 
-- 1.0       2015.11.27
-- 1.0.1     2015.12.02
-- 1.0.2     2015.12.06
-- 1.0.3     2015.12.07
-- 1.10      2015.12.09 - use different phpmysql versions
+```
+Usage: ./run.sh [subcommand] [target]
 
-## LICENSE
+Available subcommands:
+    test           Recereate and running test boxes
+    build          Build vagrant boxes
+    add            Removing previous, rebuilding & adding new boxes
+                   This deletes '.box' file after publish
 
-Copyright (c) 2015 Csaba Maulis  
-Licence: [MIT License](LICENSE)
+Available targets:
+    all            Select all boxes
+    precise        Select 'precise' x64 box
+    trusty         Select 'trusty' x64 box
+    trusty_php7    Select 'trusty' x64 with PHP v7 box
+```
+
+After `./run.sh test all`, you have a `precise_test`, `trusty_test` & `trusty_php7_test` machine up & running.  
+After `./run.sh build all`, you have a `precise.box`,`trusty.box` & `trusty_php7.box` box files in `dist` directory.  
+After `./run.sh add all`, you have a `senki/precise`,`senki/trusty` & `senki/trusty-php7` boxes added to your vagrant environment. Check with `vagrant box list`
+
+## Pre-requirements on OS X
+
+  - [homebrew](http://brew.sh)
+  - [git](http://www.git-scm.com) (recommended via homebrew: `brew install git`)
+  - [VirtualBox](https://www.virtualbox.org)
+  - [Vagrant](https://www.vagrantup.com)
+  - [vagrant-reload](https://github.com/aidanns/vagrant-reload)
+
+## Install
+
+```sh
+$ git clone --depth=1 https://github.com/senki/vagrant-boxes.git
+```
+## Copyright and license
+
+Code and documentation Copyright 2015 Csaba Maulis. Released under [the MIT license](LICENSE).
