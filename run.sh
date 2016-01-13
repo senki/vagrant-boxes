@@ -110,9 +110,9 @@ case $1 in
     build)
         PROCESS="build"
         ;;
-    build-add)
+    add)
         PROCESS="build"
-        BOXADD = true
+        BOXADD=true
         ;;
     *)
         echo "Argument missing or invalid! Exiting"
