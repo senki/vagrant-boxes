@@ -14,7 +14,6 @@ MULTITAIL_CONFIG="/etc/multitail.conf"
 VBOX_GA_VERS="5.0.12"
 
 MYSQL_ROOT_PASS="vagrant"
-PHPMYADMIN_APP_PASS="vagrant"
 PROVISION_LOG="/var/log/provision.log"
 
 if [[ $# -ne 0 ]]; then
@@ -127,26 +126,6 @@ do_config_mysqlbackuphandler() {
     touch /var/provision/config-mysqlbackuphandler
 }
 
-do_install_phpmyadmin() {
-    if [[ -f "/var/provision/install-phpmyadmin" ]]; then
-        echo "Skipping: phpMyAdmin already installed" | tee -a $PROVISION_LOG
-        return
-    fi
-    echo "Installing phpMyAdmin..." | tee -a $PROVISION_LOG
-    if [[ $BASE_OS != 'precise' ]]; then
-        add-apt-repository -y ppa:nijel/phpmyadmin >> $PROVISION_LOG 2>&1
-        apt-get -qy update >> $PROVISION_LOG 2>&1
-    fi
-    debconf-set-selections <<< "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2"
-    debconf-set-selections <<< "phpmyadmin phpmyadmin/dbconfig-install boolean true"
-    debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-user string root"
-    debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-pass password $MYSQL_ROOT_PASS"
-    debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password $PHPMYADMIN_APP_PASS"
-    debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password $PHPMYADMIN_APP_PASS"
-    apt-get -qy install phpmyadmin >> $PROVISION_LOG 2>&1
-    touch /var/provision/install-phpmyadmin
-}
-
 do_install_utilities() {
     if [[ -f "/var/provision/install-utilities" ]]; then
         echo "Skipping: Utility softwares already installed" | tee -a $PROVISION_LOG
@@ -207,8 +186,6 @@ main() {
     do_config_os_specific
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_config_mysqlbackuphandler
-    echo -n "==> " >> $PROVISION_LOG 2>&1
-    do_install_phpmyadmin
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_utilities
     echo -n "==>" >> $PROVISION_LOG 2>&1

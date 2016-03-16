@@ -52,12 +52,6 @@ $mysql_serverinfo=$mysqli->server_info;
 $mysql_clientinfo=$mysqli->client_info;
 $mysqli->close();
 
-$handle = curl_init("http://{$_SERVER['HTTP_HOST']}/phpmyadmin/");
-curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
-$response = curl_exec($handle);
-$httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
-curl_close($handle);
-$isPhpmyadmin = ($httpCode == 404) ? false : true;
 $handle = curl_init("http://{$_SERVER['HTTP_HOST']}/linfo/");
 curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
 $response = curl_exec($handle);
@@ -129,10 +123,6 @@ $isAdminer = ($httpCode == 404) ? false : true;
     <div class="one-half column">
         <h4>MySQL</h4>
         <pre><code><strong>MySQL Server:</strong> <?php echo $mysql_serverinfo; ?><br><strong>MySQL Client:</strong> <?php echo $mysql_clientinfo; ?></code></pre>
-        <?php if ($isPhpmyadmin) : ?>
-        <h4>phpMyAdmin</h4>
-        <pre><code><?php echo str_replace("Version", "<strong>Version</strong>", exec('dpkg -s phpmyadmin | grep Version')); ?> • <a href="phpmyadmin/" target="_blank">phpMyAdmin</a></code></pre>
-        <?php endif; ?>
         <?php if ($isAdminer) : ?>
         <h4>Adminer</h4>
         <pre><code><strong>Version</strong>: v4.2.3+php7-fix • <a href="adminer.php" target="_blank">Adminer</a></code></pre>

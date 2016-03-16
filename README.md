@@ -25,13 +25,13 @@ Currently only with VirtualBox provider.
   - Apache 2.2.22
   - MySQL 5.5.46
   - PHP  5.4.45
-  - PHPMyAdmin 4.2.3
+  - Adminer v4.2.3+php7-fix
 2. **senki/trusty**
   - Ubuntu Trusty x64 (14.04 LTS)
   - Apache 2.4.7
   - MySQL 5.6.27
   - PHP 5.5.9
-  - PHPMyAdmin 4.2.3
+  - Adminer v4.2.3+php7-fix
 
 ## Usage
 
