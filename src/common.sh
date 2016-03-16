@@ -27,15 +27,6 @@ if [[ $# -ne 0 ]]; then
             exit 1
             ;;
     esac
-    case $2 in
-        5|7)
-            PHP_VERS=$2
-            ;;
-        *)
-            echo "Argument missing or invalid! Exiting"
-            exit 1
-            ;;
-    esac
 else
     echo "Argument missing or invalid! Exiting"
     exit 1
@@ -216,10 +207,8 @@ main() {
     do_config_os_specific
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_config_mysqlbackuphandler
-    if [[ $PHP_VERS -ne "7" ]]; then
-        echo -n "==> " >> $PROVISION_LOG 2>&1
-        do_install_phpmyadmin
-    fi
+    echo -n "==> " >> $PROVISION_LOG 2>&1
+    do_install_phpmyadmin
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_utilities
     echo -n "==>" >> $PROVISION_LOG 2>&1
