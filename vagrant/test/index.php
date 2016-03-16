@@ -1,11 +1,10 @@
 <?php
-function interpret_php_uname()
+function interpretUname()
 {
-    $release_info["os_name"] = php_uname('s');
-    $release_info["uname_version_info"] = php_uname('v');
-    $release_info["machine_type"] = php_uname('m');
-    $release_info["kernel"] = php_uname('r');
-    $release_info["php_uname"] = php_uname();
+    $releaseInfo["OS Name"] = php_uname('s');
+    $releaseInfo["Kernel"] = php_uname('r');
+    $releaseInfo["Version"] = php_uname('v');
+    $releaseInfo["Machine Type"] = php_uname('m');
 
     $distribution["4.10"]=array("Warty Warthog", "2.6.8");
     $distribution["5.04"]=array("Hoary Hedgehog", "2.6.10");
@@ -33,58 +32,71 @@ function interpret_php_uname()
 
     foreach ($distribution as $distribution => $name_kernel) {
         list($name,$kernel)=$name_kernel;
-        if (version_compare($release_info["kernel"], $kernel, '>=')) {
-            $release_info["ubuntu_distribution"]=$distribution;
-            $release_info["ubuntu_distribution_name"]=$name;
+        if (version_compare($releaseInfo["Kernel"], $kernel, '>=')) {
+            $releaseInfo["Distribution Version"]=$distribution;
+            $releaseInfo["Distribution Name"]=$name;
         }
     }
 
-    return $release_info;
+    return $releaseInfo;
 }
-$release_info=interpret_php_uname();
+
+function checkModules($localPath)
+{
+    $handle = curl_init("http://{$_SERVER['HTTP_HOST']}/{$localPath}");
+    curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($handle);
+    $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+    curl_close($handle);
+    $isAvail = ($httpCode == 404) ? false : true;
+    return $isAvail;
+}
+
+$releaseInfo = interpretUname();
+
+$apacheMods = apache_get_modules();
+$phpExt = get_loaded_extensions();
+sort($apacheMods, SORT_STRING | SORT_FLAG_CASE);
+sort($phpExt, SORT_STRING | SORT_FLAG_CASE);
 
 $mysqli = new mysqli("localhost", "root", "vagrant");
 if (mysqli_connect_errno()) {
     printf("Connect failed: %s\n", mysqli_connect_error());
     exit();
 }
-$mysql_serverinfo=$mysqli->server_info;
-$mysql_clientinfo=$mysqli->client_info;
+$mysqlServerinfo = $mysqli->server_info;
+$mysqlClientinfo = $mysqli->client_info;
 $mysqli->close();
 
-$handle = curl_init("http://{$_SERVER['HTTP_HOST']}/linfo/");
-curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
-$response = curl_exec($handle);
-$httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
-curl_close($handle);
-$islinfo = ($httpCode == 404) ? false : true;
-$handle = curl_init("http://{$_SERVER['HTTP_HOST']}/adminer.php");
-curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
-$response = curl_exec($handle);
-$httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
-curl_close($handle);
-$isAdminer = ($httpCode == 404) ? false : true;
+$isLinfo = checkModules("linfo/");
+$isAdminer = checkModules("adminer.php");
+$isInfo = checkModules("info.php");
 
 ?>
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title><?php echo $_SERVER['HTTP_HOST']; ?></title>
+    <title><?= $_SERVER['HTTP_HOST']; ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Basic LAMP Vagrant machine with PHP <?php echo phpversion(); ?>">
+    <meta name="description" content="Basic LAMP Vagrant machine with PHP <?= phpversion(); ?>">
     <meta name="author" content="Csaba Maulis">
-    <link rel="stylesheet" href="css/normalize.css">
-    <link rel="stylesheet" href="css/skeleton.css">
+    <link rel="stylesheet" href="css/primer.css">
     <!--[if lt IE 9]> HTML5Shiv
         <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <style type="text/css">
     body {
-        margin-top: 4%;
+        margin-top: 16px;
     }
-    code{
-        white-space: pre-wrap !important;
+    .data {
+        border: 1px solid #e5e5e5;
+        padding: 16px;
+        overflow: auto;
+        line-height: 1.45;
+        background-color: #f7f7f7;
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
     }
     .multicolumn-two {
         -webkit-column-count: 2; /* Chrome, Safari, Opera */
@@ -100,53 +112,61 @@ $isAdminer = ($httpCode == 404) ? false : true;
 </head>
 <body>
 <div class="container">
-  <div class="row">
-    <div class="twelve columns">
-        <h1>Vagrant Box Info </h1>
-    </div>
+  <h1>Vagrant Box Info </h1>
+  <div class="data">
+      <strong>Vagrant Box:</strong> <?= file_get_contents("/var/provision/version") ?><br>
+      <strong>Hostname:</strong> <?= gethostname() ?><br>
+      <strong>URL:</strong> http://<?= $_SERVER['HTTP_HOST'] ?>
   </div>
- <div class="row">
-    <div class="twelve columns">
-        <pre><code><?= ($islinfo) ? '<a href="linfo/" target="_blank">Linfo</a><br>': '' ?><strong>Hostname:</strong> <?php echo gethostname(); ?><br><strong>URL:</strong> http://<?php echo $_SERVER['HTTP_HOST']; ?><br><strong>Vagrant Box:</strong> <?php echo file_get_contents("/var/provision/version"); ?></code></pre>
-    </div>
-  </div>
-
-  <div class="row">
+  <div class="columns">
     <div class="one-half column">
-        <h4>OS</h4>
-        <pre><code><?php
-        foreach ($release_info as $key => $value) {
-            echo "<strong>$key:</strong> $value<br>";
-        }
-        ?></code></pre>
+        <h2>OS</h2>
+        <div class="data">
+        <?php foreach ($releaseInfo as $key => $value) : ?>
+        <strong><?= $key ?>:</strong> <?= $value ?><br>
+        <?php endforeach ?>
+        <?= ($isLinfo) ? '<a href="linfo/" target="_blank">Linfo</a>': '' ?>
+    </div>
     </div>
     <div class="one-half column">
-        <h4>MySQL</h4>
-        <pre><code><strong>MySQL Server:</strong> <?php echo $mysql_serverinfo; ?><br><strong>MySQL Client:</strong> <?php echo $mysql_clientinfo; ?></code></pre>
+        <h2>MySQL</h2>
+        <div class="data">
+            <strong>MySQL Server:</strong> <?= $mysqlServerinfo ?><br><strong>MySQL Client:</strong> <?= $mysqlClientinfo ?>
+        </div>
         <?php if ($isAdminer) : ?>
-        <h4>Adminer</h4>
-        <pre><code><strong>Version</strong>: v4.2.3+php7-fix • <a href="adminer.php" target="_blank">Adminer</a></code></pre>
-        <?php endif; ?>
+        <h2>Adminer</h2>
+        <div class="data">
+            <strong>Version</strong>: v4.2.3+php7-fix • <a href="adminer.php" target="_blank">Open</a>
+        </div>
+        <?php endif ?>
     </div>
   </div>
-<div class="row">
+<div class="columns">
     <div class="one-half column">
-        <h4>Apache</h4>
-        <pre><code><strong>Version:</strong> <?php echo apache_get_version(); ?></code></pre>
-        <h5>Loaded modules:</h5>
-        <pre><code  class="multicolumn-two"><?php echo implode("\n", apache_get_modules());?></code></pre>
+        <h2>Apache</h2>
+        <div class="data">
+            <strong>Version:</strong> <?= apache_get_version() ?>
+        </div>
+        <h3>Loaded modules:</h3>
+        <div class="data">
+            <div  class="multicolumn-two"><?= implode("<br>", $apacheMods) ?></div>
+        </div>
     </div>
     <div class="one-half column">
-        <h4>PHP</h4>
-        <pre><code><strong>Version:</strong> <?php echo phpversion(); ?> • <a href="info.php" target="_blank">phpinfo()</a></code></pre>
-        <h5>Enabled Extension:</h5>
-        <pre><code class="multicolumn-three"><?php echo implode("\n", get_loaded_extensions());?></code></pre>
+        <h2>PHP</h2>
+        <div class="data">
+            <strong>Version:</strong> <?= phpversion() ?><?= ($isInfo) ? ' • <a href="indo.php" target="_blank">phpinfo()</a>': '' ?>
+        </div>
+        <h3>Enabled Extension:</h3>
+        <div class="data">
+            <div class="multicolumn-three"><?= implode("<br>", $phpExt)?></div>
+        </div>
 
     </div>
   </div>
-<div class="row">
-    <div class="twelwe columns">
-        <p><strong>vagrant-boxes</strong> © 2015 Csaba Maulis</p>
+<div class="columns">
+    <div class="twelwe column">
+        <p><strong>vagrant-boxes</strong> © 2015–2016 Csaba Maulis</p>
         <p><em>Intentionally PHP errors:</em>
         <?php
             ecce;
