@@ -1,42 +1,40 @@
 <?php
 function interpretUname()
 {
-    $releaseInfo["OS Name"] = php_uname('s');
-    $releaseInfo["Kernel"] = php_uname('r');
-    $releaseInfo["Version"] = php_uname('v');
+    $releaseInfo["OS Name"]      = php_uname('s');
+    $releaseInfo["Kernel"]       = php_uname('r');
+    $releaseInfo["Version"]      = php_uname('v');
     $releaseInfo["Machine Type"] = php_uname('m');
 
-    $distribution["4.10"]=array("Warty Warthog", "2.6.8");
-    $distribution["5.04"]=array("Hoary Hedgehog", "2.6.10");
-    $distribution["5.10"]=array("Breezy Badger", "2.6.12");
-    $distribution["6.06"]=array("Dapper Drake", "2.6.15");
-    $distribution["6.10"]=array("Edgy Eft", "2.6.17");
-    $distribution["7.04"]=array("Feisty Fawn", "2.6.20");
-    $distribution["7.10"]=array("Gutsy Gibbon", "2.6.22");
-    $distribution["8.04"]=array("Hardy Heron", "2.6.24");
-    $distribution["8.10"]=array("Intrepid Ibex", "2.6.27");
-    $distribution["9.04"]=array("Jaunty Jackalope", "2.6.28");
-    $distribution["9.10"]=array("Karmic Koala", "2.6.31");
-    $distribution["10.04"]=array("Lucid Lynx", "2.6.32");
-    $distribution["10.10"]=array("Maverick Meerkat", "2.6.35");
-    $distribution["11.04"]=array("Natty Narwhal", "2.6.38");
-    $distribution["11.10"]=array("Oneiric Ocelot", "3.0");
-    $distribution["12.04"]=array("Precise Pangolin", "3.2");
-    $distribution["12.10"]=array("Quantal Quetzal", "3.5");
-    $distribution["13.04"]=array("Raring Ringtail", "3.8");
-    $distribution["13.10"]=array("Saucy Salamander", "3.11");
-    $distribution["14.04"]=array("Trusty Tahr", "3.13");
-    $distribution["14.10"]=array("Utopic Unicorn", "3.16");
-    $distribution["15.04"]=array("Vivid Vervet", "3.19.3");
-    $distribution["15.10"]=array("Wily Werewolf", "4.2");
+    $distribution["4.10"]  = array("Warty Warthog", "2.6.8");
+    $distribution["5.04"]  = array("Hoary Hedgehog", "2.6.10");
+    $distribution["5.10"]  = array("Breezy Badger", "2.6.12");
+    $distribution["6.06"]  = array("Dapper Drake", "2.6.15");
+    $distribution["6.10"]  = array("Edgy Eft", "2.6.17");
+    $distribution["7.04"]  = array("Feisty Fawn", "2.6.20");
+    $distribution["7.10"]  = array("Gutsy Gibbon", "2.6.22");
+    $distribution["8.04"]  = array("Hardy Heron", "2.6.24");
+    $distribution["8.10"]  = array("Intrepid Ibex", "2.6.27");
+    $distribution["9.04"]  = array("Jaunty Jackalope", "2.6.28");
+    $distribution["9.10"]  = array("Karmic Koala", "2.6.31");
+    $distribution["10.04"] = array("Lucid Lynx", "2.6.32");
+    $distribution["10.10"] = array("Maverick Meerkat", "2.6.35");
+    $distribution["11.04"] = array("Natty Narwhal", "2.6.38");
+    $distribution["11.10"] = array("Oneiric Ocelot", "3.0");
+    $distribution["12.04"] = array("Precise Pangolin", "3.2");
+    $distribution["12.10"] = array("Quantal Quetzal", "3.5");
+    $distribution["13.04"] = array("Raring Ringtail", "3.8");
+    $distribution["13.10"] = array("Saucy Salamander", "3.11");
+    $distribution["14.04"] = array("Trusty Tahr", "3.13");
+    $distribution["14.10"] = array("Utopic Unicorn", "3.16");
+    $distribution["15.04"] = array("Vivid Vervet", "3.19.3");
+    $distribution["15.10"] = array("Wily Werewolf", "4.2");
 
-    foreach ($distribution as $distribution => $name_kernel) {
-        list($name,$kernel)=$name_kernel;
-        if (version_compare($releaseInfo["Kernel"], $kernel, '>=')) {
-            $releaseInfo["Distribution Version"]=$distribution;
-            $releaseInfo["Distribution Name"]=$name;
-        }
-    }
+    exec('lsb_release -as', $lsb);
+
+    $releaseInfo["Release"]            = $lsb[1];
+    $releaseInfo["{$lsb[0]} Version"]  = $lsb[2];
+    $releaseInfo["{$lsb[0]} Codename"] = $distribution[$lsb[2]][0];
 
     return $releaseInfo;
 }
@@ -68,9 +66,9 @@ $mysqlServerinfo = $mysqli->server_info;
 $mysqlClientinfo = $mysqli->client_info;
 $mysqli->close();
 
-$isLinfo = checkModules("linfo/");
+$isLinfo   = checkModules("linfo/");
 $isAdminer = checkModules("adminer.php");
-$isInfo = checkModules("info.php");
+$isInfo    = checkModules("info.php");
 
 ?>
 <!doctype html>
