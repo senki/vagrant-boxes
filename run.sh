@@ -94,7 +94,6 @@ do_help() {
     echo "    all            Select all boxes"
     echo "    precise        Select 'precise' x64 box"
     echo "    trusty         Select 'trusty' x64 box"
-    echo "    trusty_php7    Select 'trusty' x64 with PHP v7 box"
     echo ""
 }
 
@@ -126,10 +125,8 @@ case $2 in
         main_$PROCESS
         BOX_NAME="trusty"
         main_$PROCESS
-        BOX_NAME="trusty_php7"
-        main_$PROCESS
         ;;
-    precise|trusty|trusty_php7)
+    precise|trusty)
         BOX_NAME="${2}"
         main_$PROCESS
         ;;

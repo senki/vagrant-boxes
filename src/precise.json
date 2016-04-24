@@ -1,9 +1,9 @@
 {
     "name": "senki/precise",
-    "description": "Ubuntu Precise x64 LAMP Dev Environment with PHP v5.4 & PHPMyAdmin",
+    "description": "Ubuntu Precise x64 LAMP Dev Environment with PHP v5.4 & Adminer",
     "short_description": "Precise LAMP PHP v5.4 Dev Environment",
     "versions": [{
-        "version": "1.2.2",
+        "version": "1.2.3",
         "status": "active",
         "description_html": "<p>Based on ubuntu/precise64</p>",
         "description_markdown": "Based on ubuntu/precise64",

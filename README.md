@@ -25,19 +25,13 @@ Currently only with VirtualBox provider.
   - Apache 2.2.22
   - MySQL 5.5.46
   - PHP  5.4.45
-  - PHPMyAdmin 4.2.3
+  - Adminer v4.2.3+php7-fix
 2. **senki/trusty**
   - Ubuntu Trusty x64 (14.04 LTS)
   - Apache 2.4.7
   - MySQL 5.6.27
   - PHP 5.5.9
-  - PHPMyAdmin 4.2.3
-3. **senki/trusty-php7**
-  - Ubuntu Trusty x64 (14.04 LTS)
-  - Apache 2.4.7
-  - MySQL 5.6.27
-  - PHP 7.0.0
-  - PHPMyAdmin 4.5.2
+  - Adminer v4.2.3+php7-fix
 
 ## Usage
 
@@ -56,12 +50,11 @@ Available targets:
     all            Select all boxes
     precise        Select 'precise' x64 box
     trusty         Select 'trusty' x64 box
-    trusty_php7    Select 'trusty' x64 with PHP v7 box
 ```
 
-After `./run.sh test all`, you have a `precise_test`, `trusty_test` & `trusty_php7_test` machine up & running.  
-After `./run.sh build all`, you have a `precise.box`,`trusty.box` & `trusty_php7.box` box files in `dist` directory.  
-After `./run.sh add all`, you have a `senki/precise`,`senki/trusty` & `senki/trusty-php7` boxes added to your vagrant environment. Check with `vagrant box list`
+After `./run.sh test all`, you have a `precise_test`, `trusty_test` machine up & running.  
+After `./run.sh build all`, you have a `precise.box`,`trusty.box` box files in `dist` directory.  
+After `./run.sh add all`, you have a `senki/precise`,`senki/trusty` boxes added to your vagrant environment. Check with `vagrant box list`
 
 ## Pre-requirements on OS X
 
