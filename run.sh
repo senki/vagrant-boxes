@@ -33,7 +33,8 @@ do_logcheck() {
             -e "preconfigure: unable to re-open stdin" \
             -e "No error reported" \
             -e "TIMESTAMP with implicit DEFAULT value is deprecated" \
-            -e "key_buffer instead of key_buffer_size"
+            -e "key_buffer instead of key_buffer_size" \
+            -e "while removing linux-headers"
       then
         echo -e "${RED}Logfile has error(s), aborting!${NC}"
         echo "    All foundigs:"
