@@ -138,7 +138,7 @@ $isInfo    = checkModules("info.php");
         <?php if ($isAdminer) : ?>
         <h2>Adminer</h2>
         <div class="data">
-            <strong>Version</strong>: v4.2.3+php7-fix • <a href="adminer.php" target="_blank">Open</a>
+            <strong>Version</strong>: v4.2.5 • <a href="adminer.php" target="_blank">Open</a>
         </div>
         <?php endif ?>
     </div>
