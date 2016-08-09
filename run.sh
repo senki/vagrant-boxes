@@ -10,7 +10,7 @@ GREEN="\033[1;32m"
 YELLOW="\033[0;33m"
 RED="\033[1;31m"
 NC="\033[0m"
-BOXADD=false
+ISTEST=false
 
 do_logcheck() {
     find ./vagrant/log -type f \( ! -iname "*.gitignore" \) -mtime +1 -delete
@@ -45,27 +45,30 @@ do_logcheck() {
     fi
 }
 
-main_test() {
-  echo -e "${GREEN}Destroying previously ubuntu ${BOX_NAME} tls x64 test box - if any${NC}"
-  find ./vagrant/db -type f \( ! -iname "*.gitignore" \) -delete
+do_destroy() {
+  echo -e "${GREEN}Destroying previously ubuntu ${BOX_NAME} tls x64 box - if any${NC}"
+  vagrant destroy ${BOX_NAME} -f
   vagrant destroy ${BOX_NAME}_test -f
-  echo -e "${GREEN}Building ubuntu ${BOX_NAME} tls x64 test box${NC}"
-  vagrant up ${BOX_NAME}_test --provision
+  }
+
+do_build() {
+  echo -e "${GREEN}Building ubuntu ${BOX_NAME} tls x64 box${NC}"
+  if $ISTEST ; then
+    vagrant up ${BOX_NAME}_test --provision
+  else
+    vagrant up ${BOX_NAME} --provision
+  fi
   do_logcheck
-  open "http://senki-$(echo ${BOX_NAME//_/-})-test.local"
+  if $ISTEST ; then
+    open "http://senki-$(echo ${BOX_NAME//_/-})-test.local"
+  fi
 }
 
-main_build() {
-    echo -e "${GREEN}Building ubuntu ${BOX_NAME} tls x64 vagrant box${NC}"
-    find ./vagrant/db -type f \( ! -iname "*.gitignore" \) -delete
-    if [[ BOXADD ]]; then
-      set +e
-      vagrant box remove senki/$(echo ${BOX_NAME//_/-}) -f
-      set -e
-    fi
-    vagrant destroy ${BOX_NAME} -f
-    vagrant up ${BOX_NAME}
-    do_logcheck
+do_add() {
+    echo -e "${GREEN}Adding ubuntu ${BOX_NAME} tls x64 vagrant box${NC}"
+    set +e
+    vagrant box remove senki/$(echo ${BOX_NAME//_/-}) -f
+    set -e
     if [ ! -d "dist" ]; then
         mkdir dist
     fi
@@ -73,11 +76,8 @@ main_build() {
         rm dist/${BOX_NAME}.box
     fi
     vagrant package ${BOX_NAME} --output dist/${BOX_NAME}.box
-    if [[ BOXADD ]]; then
-      vagrant box add src/${BOX_NAME}.json
-      rm dist/${BOX_NAME}.box
-      vagrant destroy ${BOX_NAME} -f
-    fi
+    vagrant box add src/${BOX_NAME}.json
+    rm dist/${BOX_NAME}.box
 }
 
 do_help() {
@@ -86,6 +86,7 @@ do_help() {
     echo "Usage: $0 [subcommand] [target]"
     echo ""
     echo "Available subcommands:"
+    echo "    destroy        Destroy previously created boxes"
     echo "    test           Recereate and running test boxes"
     echo "    build          Build vagrant boxes"
     echo "    add            Removing previous, rebuilding & adding new boxes"
@@ -98,21 +99,28 @@ do_help() {
     echo ""
 }
 
+# start here
+
 if [ $# -lt 2 ]; then
     do_help
     exit
 fi
 
+find ./vagrant/db -type f \( ! -iname "*.gitignore" \) -delete
+
 case $1 in
+    destroy)
+        PROCESS="destroy"
+        ;;
     test)
-        PROCESS="test"
+        PROCESS="build"
+        ISTEST=true
         ;;
     build)
         PROCESS="build"
         ;;
     add)
-        PROCESS="build"
-        BOXADD=true
+        PROCESS="add"
         ;;
     *)
         echo "Argument missing or invalid! Exiting"
@@ -123,13 +131,13 @@ esac
 case $2 in
     all)
         BOX_NAME="precise"
-        main_$PROCESS
+        do_$PROCESS
         BOX_NAME="trusty"
-        main_$PROCESS
+        do_$PROCESS
         ;;
     precise|trusty)
         BOX_NAME="${2}"
-        main_$PROCESS
+        do_$PROCESS
         ;;
     *)
         echo "Argument missing or invalid! Exiting"
