@@ -87,6 +87,10 @@ $isInfo    = checkModules("info.php");
     body {
         margin-top: 16px;
     }
+    .code {
+        font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+        color: #808080;
+    }
     .data {
         border: 1px solid #e5e5e5;
         padding: 16px;
@@ -110,7 +114,7 @@ $isInfo    = checkModules("info.php");
 </head>
 <body>
 <div class="container">
-  <h1>Vagrant Box Info </h1>
+  <h1>Vagrant Box Info <span class="code">`<?= gethostname() ?>`</span></h1>
   <div class="data">
       <strong>Vagrant Box:</strong> <?= file_get_contents("/var/provision/version") ?><br>
       <strong>Hostname:</strong> <?= gethostname() ?><br>
@@ -134,7 +138,7 @@ $isInfo    = checkModules("info.php");
         <?php if ($isAdminer) : ?>
         <h2>Adminer</h2>
         <div class="data">
-            <strong>Version</strong>: v4.2.3+php7-fix • <a href="adminer.php" target="_blank">Open</a>
+            <strong>Version</strong>: v4.2.5 • <a href="adminer.php" target="_blank">Open</a>
         </div>
         <?php endif ?>
     </div>
@@ -153,7 +157,7 @@ $isInfo    = checkModules("info.php");
     <div class="one-half column">
         <h2>PHP</h2>
         <div class="data">
-            <strong>Version:</strong> <?= phpversion() ?><?= ($isInfo) ? ' • <a href="indo.php" target="_blank">phpinfo()</a>': '' ?>
+            <strong>Version:</strong> <?= phpversion() ?><?= ($isInfo) ? ' • <a href="info.php" target="_blank">phpinfo()</a>': '' ?>
         </div>
         <h3>Enabled Extension:</h3>
         <div class="data">

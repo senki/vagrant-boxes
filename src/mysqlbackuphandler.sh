@@ -36,10 +36,10 @@ case "$1" in
         tar -czf /vagrant/vagrant/db/mysql-${NOW}.tar.gz -C /var/lib/mysql/ . # backup
         ;;
     restore)
-        if [ $2 -eq 0 ]; then
+        if [[ $2 -eq 0 ]]; then
             do_help
             exit 1
-        elif [ -f "/vagrant/vagrant/db/${2}" ]; then
+        elif [[ -f "/vagrant/vagrant/db/${2}" ]]; then
         echo "Restoring MySQL Data directory"
             service mysql stop
             rm -rf /var/lib/mysql/*

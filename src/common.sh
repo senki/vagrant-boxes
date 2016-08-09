@@ -11,7 +11,7 @@
 HOST_CONFIG="/etc/hosts"
 LOCALE_CONFIG="/etc/default/locale"
 MULTITAIL_CONFIG="/etc/multitail.conf"
-VBOX_GA_VERS="5.0.18"
+VBOX_GA_VERS="5.1.2"
 
 MYSQL_ROOT_PASS="vagrant"
 PROVISION_LOG="/var/log/provision.log"
@@ -62,6 +62,7 @@ do_install_vbox_ga() {
     apt-get -qy purge virtualbox-\* >> $PROVISION_LOG 2>&1
     apt-get -qy install build-essential linux-headers-generic dkms >> $PROVISION_LOG 2>&1
     if [[ ! -f "/vagrant/src/vbox_ga_$VBOX_GA_VERS.iso" ]]; then
+      rm /vagrant/src/vbox_ga_*
         curl -s -L -o /vagrant/src/vbox_ga_$VBOX_GA_VERS.iso http://download.virtualbox.org/virtualbox/$VBOX_GA_VERS/VBoxGuestAdditions_$VBOX_GA_VERS.iso >> $PROVISION_LOG 2>&1
     fi
     mkdir /media/vbox_ga_$VBOX_GA_VERS
@@ -149,7 +150,7 @@ do_install_utilities() {
 
 do_save_version() {
     if [[ -f "/var/provision/version" ]]; then
-        echo "Version info from already stored:" | tee -a $PROVISION_LOG
+        echo "Version info already stored:" | tee -a $PROVISION_LOG
         echo "/var/provision/version: \"$(cat /var/provision/version)\"" | tee -a $PROVISION_LOG
         return
     fi
