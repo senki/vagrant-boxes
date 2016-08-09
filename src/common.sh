@@ -150,7 +150,7 @@ do_install_utilities() {
 
 do_save_version() {
     if [[ -f "/var/provision/version" ]]; then
-        echo "Version info from already stored:" | tee -a $PROVISION_LOG
+        echo "Version info already stored:" | tee -a $PROVISION_LOG
         echo "/var/provision/version: \"$(cat /var/provision/version)\"" | tee -a $PROVISION_LOG
         return
     fi
