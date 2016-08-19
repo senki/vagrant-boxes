@@ -69,8 +69,8 @@ $settings['show']['services'] = true;
 
 // Hide certain file systems / devices
 $settings['hide']['filesystems'] = array(
-	'tmpfs', 'ecryptfs', 'nfsd', 'rpc_pipefs',
-	'usbfs', 'devpts', 'fusectl', 'securityfs', 'fuse.truecrypt');
+    'tmpfs', 'ecryptfs', 'nfsd', 'rpc_pipefs',
+    'usbfs', 'devpts', 'fusectl', 'securityfs', 'fuse.truecrypt');
 $settings['hide']['storage_devices'] = array('gvfs-fuse-daemon', 'none');
 
 // filter mountpoints based on PCRE regex, eg '@^/proc@', '@^/sys@', '@^/dev@'
@@ -97,13 +97,13 @@ $settings['temps_show0rpmfans'] = false; // Set to true to show fans with 0 RPM
 // Configuration for getting temps with hddtemp
 $settings['hddtemp']['mode'] = 'daemon'; // Either daemon or syslog
 $settings['hddtemp']['address'] = array( // Address/Port of hddtemp daemon to connect to
-	'host' => 'localhost',
-	'port' => 7634
+    'host' => 'localhost',
+    'port' => 7634
 );
 // Configuration for getting temps with mbmon
 $settings['mbmon']['address'] = array( // Address/Port of mbmon daemon to connect to
-	'host' => 'localhost',
-	'port' => 411
+    'host' => 'localhost',
+    'port' => 411
 );
 
 /*
@@ -111,7 +111,7 @@ $settings['mbmon']['address'] = array( // Address/Port of mbmon daemon to connec
  * and the extensions, you may specify other paths to search for them here:
  */
 $settings['additional_paths'] = array(
-	 //'/opt/bin' # for example
+     //'/opt/bin' # for example
 );
 
 
@@ -125,14 +125,14 @@ $settings['additional_paths'] = array(
 // Format: Label => pid file path
 $settings['services']['pidFiles'] = array(
     'Apache' => $apachepid, // uncomment to enable
-	'SSHd' => '/var/run/sshd.pid'
+    'SSHd' => '/var/run/sshd.pid'
 );
 
 // Format: Label => path to executable or array containing arguments to be checked
 $settings['services']['executables'] = array(
-	'MySQLd' => '/usr/sbin/mysqld' // uncomment to enable
-	// 'BuildSlave' => array('/usr/bin/python', // executable
-	//						1 => '/usr/local/bin/buildslave') // argv[1]
+    'MySQLd' => '/usr/sbin/mysqld' // uncomment to enable
+    // 'BuildSlave' => array('/usr/bin/python', // executable
+    //                        1 => '/usr/local/bin/buildslave') // argv[1]
 );
 
 /*
@@ -140,11 +140,11 @@ $settings['services']['executables'] = array(
  */
 
 // Show errors? Disabled by default to hide vulnerabilities / attributes on the server
-$settings['show_errors'] = false;
+$settings['show_errors'] = true;
 
 // Show results from timing ourselves? Similar to above.
 // Lets you see how much time getting each bit of info takes.
-$settings['timer'] = false;
+$settings['timer'] = true;
 
 // Compress content, can be turned off to view error messages in browser
 $settings['compress_content'] = true;
@@ -161,5 +161,5 @@ $settings['compress_content'] = true;
  * Note: this is extremely dangerous if done wrong
  */
 $settings['sudo_apps'] = array(
-	//'ps' // For example
+    //'ps' // For example
 );

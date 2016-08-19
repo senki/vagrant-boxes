@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 
 ### BEGIN INIT INFO
 # Provides:          mysqlbackuphandler.sh
-# Required-Start:    vboxadd-service $remote_fs $syslog
-# Required-Stop:     vboxadd-service $remote_fs $syslog
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: Backup and restore MySQL data directory.
