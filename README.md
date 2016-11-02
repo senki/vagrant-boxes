@@ -1,7 +1,7 @@
 # vagrant-boxes
 
 Create Basic Ubuntu LAMP Vagrant boxes.  
-Currently only with VirtualBox provider.
+Only with VirtualBox provider.
 
 >WIP – Currently `senki/[boxes]` not available online for downloads.
 
