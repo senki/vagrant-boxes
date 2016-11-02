@@ -135,6 +135,7 @@ main() {
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_prepare
     echo -n "==> " >> $PROVISION_LOG 2>&1
+    do_os_prepare
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_lamp
     echo -n "==> " >> $PROVISION_LOG 2>&1
