@@ -38,7 +38,7 @@ do_prepare() {
     # remove tty warning
     sed -i "s/^mesg n$/tty -s \&\& mesg n/g" /root/.profile
     # set timezone
-    echo "Europe/Budapest" > /etc/timezone
+    echo "Australia/Perth" > /etc/timezone
     dpkg-reconfigure -f noninteractive tzdata >> $PROVISION_LOG 2>&1
     # set locales
     export LANGUAGE="en_US.UTF-8"
