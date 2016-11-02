@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 
 ### BEGIN INIT INFO
 # Provides:          mysqlbackuphandler.sh
-# Required-Start:    vboxadd-service $remote_fs $syslog
-# Required-Stop:     vboxadd-service $remote_fs $syslog
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: Backup and restore MySQL data directory.
@@ -33,7 +33,7 @@ NOW=$(date +"%Y-%m-%d-%H-%M-%S")
 case "$1" in
     start|stop|backup)
         echo "Backup MySQL Data directory"
-        tar -czf /vagrant/vagrant/db/mysql-${NOW}.tar.gz -C /var/lib/mysql/ . # backup
+        tar -czf /vagrant/vagrant/db/mysql-"$NOW".tar.gz -C /var/lib/mysql/ . # backup
         ;;
     restore)
         if [[ $2 -eq 0 ]]; then
@@ -43,7 +43,7 @@ case "$1" in
         echo "Restoring MySQL Data directory"
             service mysql stop
             rm -rf /var/lib/mysql/*
-            tar -xzf /vagrant/vagrant/db/${2} -C /var/lib/mysql/ # restore
+            tar -xzf /vagrant/vagrant/db/"$2" -C /var/lib/mysql/ # restore
             service mysql start
         else
             do_help

@@ -1,0 +1,15 @@
+{
+  "name": "senki/xenial",
+  "description": "Ubuntu Xenial x64 LAMP Dev Environment with PHP v5.5 & Adminer",
+  "short_description": "Xenial LAMP Dev Environment",
+  "versions": [{
+    "version": "1.3.0",
+    "status": "active",
+    "description_html": "<p>Based on ubuntu/xenial64</p>",
+    "description_markdown": "Based on ubuntu/xenial64",
+    "providers": [{
+      "name": "virtualbox",
+      "url": "dist/xenial.box"
+    }]
+  }]
+}

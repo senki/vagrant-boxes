@@ -29,6 +29,7 @@ function interpretUname()
     $distribution["14.10"] = array("Utopic Unicorn", "3.16");
     $distribution["15.04"] = array("Vivid Vervet", "3.19.3");
     $distribution["15.10"] = array("Wily Werewolf", "4.2");
+    $distribution["16.04"] = array("Xenial Xerus", "4.4");
 
     exec('lsb_release -as', $lsb);
 
@@ -66,9 +67,12 @@ $mysqlServerinfo = $mysqli->server_info;
 $mysqlClientinfo = $mysqli->client_info;
 $mysqli->close();
 
-$isLinfo   = checkModules("linfo/");
-$isAdminer = checkModules("adminer.php");
-$isInfo    = checkModules("info.php");
+$isLinfo     = checkModules("linfo/");
+$linfoVers   = "3.0.1";
+$isAdminer   = checkModules("adminer.php");
+$adminerVers = "4.2.5";
+$isInfo      = checkModules("info.php");
+$isBench     = checkModules("benchmark.php");
 
 ?>
 <!doctype html>
@@ -127,7 +131,9 @@ $isInfo    = checkModules("info.php");
         <?php foreach ($releaseInfo as $key => $value) : ?>
         <strong><?= $key ?>:</strong> <?= $value ?><br>
         <?php endforeach ?>
-        <?= ($isLinfo) ? '<a href="linfo/" target="_blank">Linfo</a>': '' ?>
+        <?php if ($isLinfo) : ?>
+            <strong>Linfo:</strong> <?= $linfoVers ?> • <a href="linfo/" target="_blank">Open</a>
+        <?php endif; ?>
     </div>
     </div>
     <div class="one-half column">
@@ -138,7 +144,7 @@ $isInfo    = checkModules("info.php");
         <?php if ($isAdminer) : ?>
         <h2>Adminer</h2>
         <div class="data">
-            <strong>Version</strong>: v4.2.5 • <a href="adminer.php" target="_blank">Open</a>
+            <strong>Version</strong>: <?= $adminerVers ?> • <a href="adminer.php" target="_blank">Open</a>
         </div>
         <?php endif ?>
     </div>
@@ -157,7 +163,9 @@ $isInfo    = checkModules("info.php");
     <div class="one-half column">
         <h2>PHP</h2>
         <div class="data">
-            <strong>Version:</strong> <?= phpversion() ?><?= ($isInfo) ? ' • <a href="info.php" target="_blank">phpinfo()</a>': '' ?>
+            <strong>Version:</strong> <?= phpversion() ?>
+            <?= ($isInfo) ? ' • <a href="info.php" target="_blank">phpinfo()</a>': '' ?>
+            <?= ($isBench) ? ' • <a href="benchmark.php" target="_blank">benchmark</a>': '' ?>
         </div>
         <h3>Enabled Extension:</h3>
         <div class="data">
