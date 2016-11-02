@@ -1,47 +1,56 @@
 <?php
 
-/*
- * This file is part of Linfo (c) 2010-2015 Joseph Gillotti.
- * 
- * Linfo is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * Linfo is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with Linfo. If not, see <http://www.gnu.org/licenses/>.
- * 
-*/
+require_once __DIR__ . '/standalone_autoload.php';
 
-// Load libs
-require_once dirname(__FILE__).'/init.php';
+use \Linfo\Exceptions\FatalException;
+use \Linfo\Linfo;
+use \Linfo\Common;
 
-// Begin
 try {
 
-  // Load settings and language
-	$linfo = new Linfo;
+    // Load settings file..
+    // Support legacy config files
+    define('IN_LINFO', 'true');
+    define('IN_INFO', 'true');
+    if (!is_file(__DIR__.'/config.inc.php') && is_file(__DIR__.'/sample.config.inc.php')) {
+        throw new FatalException('Make changes to sample.config.inc.php then rename as config.inc.php');
+    } elseif (!is_file(__DIR__.'/config.inc.php')) {
+        throw new FatalException('Config file not found.');
+    }
 
-  // Run through /proc or wherever and build our list of settings
-	$linfo->scan();
+    $settings = Common::getVarFromFile(__DIR__.'/config.inc.php', 'settings');
 
-  // Give it off in html/json/whatever
-	$linfo->output();
+    $linfo = new Linfo($settings);
+    $linfo->scan();
+
+    if (isset($_SERVER['LINFO_NCURSES']) && php_sapi_name() == 'cli') {
+        $output = new \Linfo\Output\Ncurses($linfo);
+    }
+    else {
+        switch (array_key_exists('out', $_GET) ? strtolower($_GET['out']) : 'html') {
+            default:
+            case 'html':
+                $output = new \Linfo\Output\Html($linfo);
+            break;
+
+            case 'json':
+            case 'jsonp': // To use JSON-P, pass the GET arg - callback=function_name
+                $output = new \Linfo\Output\Json($linfo, array_key_exists('callback', $_GET) ? $_GET['callback'] : null);
+            break;
+
+            case 'php_array':
+                $output = new \Linfo\Output\Serialized($linfo);
+            break;
+
+            case 'xml':
+                $output = new \Linfo\Output\Xml($linfo);
+            break;
+        }
+    }
+
+    $output->output();
+
+} catch (FatalException $e) {
+    echo $e->getMessage()."\n";
+    exit(1);
 }
-
-// No more inline exit's in any of Linfo's core code!
-catch (LinfoFatalException $e) {
-	echo $e->getMessage()."\n";
-	exit(1);
-}
-
-// Developers:
-// if you include init.php as above and instantiate a $linfo
-// object, you can get an associative array of all of the 
-// system info with $linfo->getInfo() after running $linfo->scan();
-// Just catch the LinfoFatalException for fatal errors

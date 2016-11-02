@@ -68,7 +68,7 @@ $mysqlClientinfo = $mysqli->client_info;
 $mysqli->close();
 
 $isLinfo     = checkModules("linfo/");
-$linfoVers   = "2.0.3";
+$linfoVers   = "3.0.1";
 $isAdminer   = checkModules("adminer.php");
 $adminerVers = "4.2.5";
 $isInfo      = checkModules("info.php");
