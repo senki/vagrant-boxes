@@ -8,10 +8,9 @@
 #  $ vagrant provision
 # From the host machine
 
-HOST_CONFIG="/etc/hosts"
 LOCALE_CONFIG="/etc/default/locale"
 MULTITAIL_CONFIG="/etc/multitail.conf"
-MYSQL_ROOT_PASS="vagrant"
+MYSQL_PASS="vagrant"
 PROVISION_LOG="/var/log/provision.log"
 
 if [[ $# -ne 0 ]]; then
@@ -62,26 +61,30 @@ do_install_lamp() {
     fi
     export DEBIAN_FRONTEND=noninteractive
     echo "Installing LAMP Stack..."  | tee -a $PROVISION_LOG
-    debconf-set-selections <<< "mysql-server mysql-server/root_password password $MYSQL_ROOT_PASS"
-    debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $MYSQL_ROOT_PASS"
-    apt-get -qy install lamp-server^ >> $PROVISION_LOG 2>&1
-    a2enmod rewrite >> $PROVISION_LOG 2>&1
-    service apache2 restart >> $PROVISION_LOG 2>&1
+    debconf-set-selections <<< "mysql-server mysql-server/root_password password $MYSQL_PASS"
+    debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $MYSQL_PASS"
+    {
+        apt-get -qy install lamp-server^
+        a2enmod rewrite
+        service apache2 restart
+    }  >> $PROVISION_LOG 2>&1
     sed -i "s/^\#general_log/general_log/g" /etc/mysql/my.cnf
     touch /var/provision/install-lamp
 }
 
 do_config_mysqlbackuphandler() {
-    if [[ -f "/var/provision/config-mysqlbackuphandler" ]]; then
-        echo "Skipping: MySQL Data backup/restore handler already configured..." | tee -a $PROVISION_LOG
+    if [[ -f "/var/provision/mysqlbackuphandler-config" ]]; then
+        echo "Skipping: MySQL Data backup/restore handler already configured" | tee -a $PROVISION_LOG
         return
     fi
     echo "Setting up MySQL Data backup/restore handler..." | tee -a $PROVISION_LOG
     cp /vagrant/src/mysqlbackuphandler.sh /etc/init.d/mysqlbackuphandler.sh
     chmod +x /etc/init.d/mysqlbackuphandler.sh
-    update-rc.d mysqlbackuphandler.sh defaults  >> $PROVISION_LOG 2>&1
-    /etc/init.d/mysqlbackuphandler.sh backup >> $PROVISION_LOG 2>&1
-    touch /var/provision/config-mysqlbackuphandler
+    {
+        update-rc.d mysqlbackuphandler.sh defaults
+        /etc/init.d/mysqlbackuphandler.sh backup
+    } >> $PROVISION_LOG 2>&1
+    touch /var/provision/mysqlbackuphandler-config
 }
 
 do_install_utilities() {
@@ -90,17 +93,20 @@ do_install_utilities() {
         return
     fi
     echo "Installing utility softwares..." | tee -a $PROVISION_LOG
-    # htop, ruby, tree, wget
-    apt-get -qy install htop ruby1.9.1 tree wget >> $PROVISION_LOG 2>&1
+    # htop, tree
+    apt-get -qy install htop tree >> $PROVISION_LOG 2>&1
     # multitail
-    apt-get -qy install libncursesw5-dev >> $PROVISION_LOG 2>&1
-    curl -s -L -O https://github.com/flok99/multitail/archive/v6.3.tar.gz >> $PROVISION_LOG 2>&1
-    tar xzf v6.3.tar.gz
-    rm v6.3.tar.gz
-    cd multitail-6.3 && make install -s >> $PROVISION_LOG 2>&1 && cd ..
-    rm -rf multitail-6.3
+    {
+        apt-get -qy install libncursesw5-dev
+        curl -s -L -O https://www.vanheusden.com/multitail/multitail-6.4.2.tgz
+    } >> $PROVISION_LOG 2>&1
+    tar xzf multitail-6.4.2.tgz
+    rm multitail-6.4.2.tgz
+    cd multitail-6.4.2 && make install -s >> $PROVISION_LOG 2>&1 && cd ..
+    rm -rf multitail-6.4.2
     cp /etc/multitail.conf.new $MULTITAIL_CONFIG
     sed -i "s/^xclip:\/usr\/bin\/xclip$/\# xclip:\/usr\/bin\/xclip/g" $MULTITAIL_CONFIG
+    # update locate db
     updatedb >> $PROVISION_LOG 2>&1
     touch /var/provision/install-utilities
 }
@@ -111,9 +117,9 @@ do_save_version() {
         echo "/var/provision/version: \"$(cat /var/provision/version)\"" | tee -a $PROVISION_LOG
         return
     fi
-    echo "Saving version info to file..." | tee -a $PROVISION_LOG
-    BOX_NAME=$(cat /vagrant/src/${BASE_OS}.json | ruby1.9.1 -rjson -e 'j = JSON.parse(STDIN.read); puts j["name"]')
-    BOX_VERSION=$(cat /vagrant/src/${BASE_OS}.json | ruby1.9.1 -rjson -e 'j = JSON.parse(STDIN.read); puts j["versions"][0]["version"]')
+    BOX_VERSION=$(cat /vagrant/src/"$BASE_OS".json | $RUBY_EXEC -rjson -e 'j = JSON.parse(STDIN.read); puts j["versions"][0]["version"]')
+    echo "Saving version info (v$BOX_VERSION) to file..." | tee -a $PROVISION_LOG
+    BOX_NAME=$(cat /vagrant/src/"$BASE_OS".json | $RUBY_EXEC -rjson -e 'j = JSON.parse(STDIN.read); puts j["name"]')
     echo "$BOX_NAME v$BOX_VERSION" > /var/provision/version
 
 }
@@ -139,14 +145,16 @@ main() {
     do_config_mysqlbackuphandler
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_utilities
-    echo -n "==>" >> $PROVISION_LOG 2>&1
-    echo -n "Cleanup" | tee -a $PROVISION_LOG
-    apt-get -qy autoremove >> $PROVISION_LOG 2>&1
-    apt-get -qy autoclean >> $PROVISION_LOG 2>&1
+    echo -n "==> " >> $PROVISION_LOG 2>&1
+    echo -e "Cleanup" | tee -a $PROVISION_LOG
+    {
+        apt-get -qy autoremove
+        apt-get -qy autoclean
+    } >> $PROVISION_LOG 2>&1
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_save_version
     echo "All done"
     echo "==> Box provisioning done at: $(date)" >> $PROVISION_LOG 2>&1
     NOW=$(date +"%Y-%m-%d-%H-%M-%S")
-    cp $PROVISION_LOG /vagrant/vagrant/log/${BASE_OS}-$TARGET-$NOW.log
+    cp $PROVISION_LOG /vagrant/vagrant/log/"$BASE_OS"-"$TARGET"-"$NOW".log
 }
