@@ -1,0 +1,190 @@
+#!/usr/bin/env bash
+
+# Copyright (c) 2015 Csaba Maulis
+#
+# SEE LICENSE File
+
+set -e
+
+RED="\033[1;31m"
+GREEN="\033[1;32m"
+YELLOW="\033[1;33m"
+BLUE="\033[1;34m"
+WHITE="\033[1;37m"
+NC="\033[0m"
+LATEST_GA="http://download.virtualbox.org/virtualbox/LATEST.TXT"
+VBOX_GA_VERS=$(curl -s -L "$LATEST_GA")
+
+do_destroy() {
+    echo -e "${BLUE}Destroying previously built Ubuntu ${BOX_NAME} box ${WHITE}- if any${NC}"
+    vagrant destroy "$BOX_NAME" -f
+}
+
+do_build() {
+    echo -e "${BLUE}Building Ubuntu ${BOX_NAME} box${NC}"
+    vagrant up "$BOX_NAME" --provision
+    do_test
+}
+
+do_add() {
+    echo -e "${BLUE}Adding Ubuntu ${BOX_NAME} box${NC}"
+    set +e
+    vagrant box remove senki/"${BOX_NAME//_/-}" -f
+    set -e
+    if [ ! -d "dist" ]; then
+        mkdir dist
+    fi
+    if [ -f "dist/${BOX_NAME}.box" ]; then
+        rm dist/"$BOX_NAME".box
+    fi
+    vagrant package "$BOX_NAME" --output dist/"$BOX_NAME".box
+    vagrant box add src/"$BOX_NAME".json
+    rm dist/"$BOX_NAME".box
+}
+
+do_test() {
+    echo -e "${BLUE}Testing Ubuntu $BOX_NAME box${NC}"
+    find ./vagrant/log -type f \( ! -iname "*.gitignore" \) -mtime +1 -delete
+    LOGFILE=$(
+        find ./vagrant/log -type f |
+        sort -t '-' -k3nr -k4nr -k5nr -k6nr -k7nr -k8nr |
+        head -1
+    )
+    echo -e  "${YELLOW}Logfile: $LOGFILE${NC}"
+    echo -ne "${YELLOW}Problem: "
+    if grep -i \
+            -e warning \
+            -e error \
+            -e fail \
+            -e unable \
+            -e "not exist" \
+            "$LOGFILE" |
+        grep -vc \
+            -e error.o \
+            -e error-pages \
+            -e "preconfigure: unable to re-open stdin" \
+            -e "No error reported" \
+            -e "TIMESTAMP with implicit DEFAULT value is deprecated" \
+            -e "key_buffer_size is deprecated" \
+            -e "while removing linux-headers" \
+            -e "Wimplicit-function-declaration"
+    then
+        echo -e "${RED}Logfile has error(s), aborting!${NC}"
+        echo "    All foundigs:"
+        grep -i -e warning -e error -e fail -e unable -e "not exist" "$LOGFILE"
+        exit
+    else
+        echo -e "${GREEN}No unknown errors in logfile${NC}"
+    fi
+    do_open
+}
+
+do_open() {
+    # open in browser
+    if [[ $BOX_NAME == *"test"* ]]; then
+        open "http://senki-${BOX_NAME//_/-}.local"
+    fi
+}
+
+do_update() {
+    if [[ ! -f "src/vbox_ga_$VBOX_GA_VERS.iso" ]]; then
+        do_update-vbox
+        vagrant ssh "$BOX_NAME" --command "sudo /vagrant/src/update-vbox-ga.sh $VBOX_GA_VERS"
+        vagrant reload "$BOX_NAME"
+    else
+        echo -e "${GREEN}VirtualBox Guest Additions v$VBOX_GA_VERS already downloaded${NC}"
+    fi
+}
+
+do_upgrade() {
+        vagrant ssh "$BOX_NAME" --command "sudo apt-get -y dist-upgrade && sudo apt-get -y autoremove"
+        vagrant reload "$BOX_NAME"
+}
+
+do_update-vbox() {
+    if [[ ! -f "src/vbox_ga_$VBOX_GA_VERS.iso" ]]; then
+        echo -e "${BLUE}Downloading VirtualBox Guest Additions v$VBOX_GA_VERS...${NC}"
+        set +e
+        rm src/vbox_ga_*
+        set -e
+        curl -L -o src/vbox_ga_"$VBOX_GA_VERS".iso http://download.virtualbox.org/virtualbox/"$VBOX_GA_VERS"/VBoxGuestAdditions_"$VBOX_GA_VERS".iso
+    else
+        echo -e "${GREEN}VirtualBox Guest Additions v$VBOX_GA_VERS already downloaded${NC}"
+    fi
+}
+
+do_help() {
+    echo "Argument missing or invalid!"
+    echo ""
+    echo "Usage (1): $0 [build|test|destroy|add|update] [target]"
+    echo ""
+    echo "Commands:"
+    echo "    build          Build & test a box"
+    echo "    test           Testing already built boxes (use on *_test box only)"
+    echo "    destroy        Destroy a box"
+    echo "    add            Removing previously added & re-publish box"
+    echo "                   This deletes '.box' file after publish"
+    echo "    update         Update VBoxGuestAdditions on a box"
+    echo "    upgrade        'sudo apt-get dist-upgrade' on a box"
+    echo "    open           Open box URL in browser"
+    echo ""
+    echo "Available targets:"
+    echo "    precise"
+    echo "    precise_test"
+    echo "    trusty"
+    echo "    trusty_test"
+    echo "    xenial"
+    echo "    xenial_test"
+    echo ""
+    echo "Usage (2): $0 update-vbox <vbox-version>"
+    echo ""
+    echo "Downloading VBoxGuestAdditions"
+    echo "    update-vbox    Downloading VBoxGuestAdditions"
+    echo ""
+    echo "Specify 'vbox-version'"
+    echo "    If not definded, this script is downlading the latest,"
+    echo "    based on the '$LATEST_GA'"
+    echo "    file contents"
+    echo ""
+}
+
+# start here
+
+T="$(date +%s)"
+
+if [ $# -lt 1 ]; then
+    do_help
+    exit
+fi
+
+find ./vagrant/db -type f \( ! -iname "*.gitignore" \) -delete
+
+case $1 in
+    build|test|destroy|add|update|upgrade|open)
+    PROCESS="$1"
+    case $2 in
+        precise|precise_test|trusty|trusty_test|xenial|xenial_test)
+            BOX_NAME="$2"
+            VBOX_GA_VERS=$(curl -s -L "$LATEST_GA")
+            do_"$PROCESS"
+            ;;
+        *)
+            echo "Argument missing or invalid! Exiting"
+            exit 1
+            ;;
+    esac
+        ;;
+    update-vbox)
+        PROCESS="$1"
+        BOX_NAME="all"
+        do_"$PROCESS"
+        ;;
+    *)
+        echo "Argument missing or invalid! Exiting"
+        exit 1
+        ;;
+esac
+
+T="$(($(date +%s)-T))"
+FT="$(date -u -r $T +%T)"
+echo -e "${GREEN}Finished ${BLUE}$PROCESS ${GREEN}process on ${BLUE}$BOX_NAME${GREEN}. Time: ${WHITE}$FT${NC}"

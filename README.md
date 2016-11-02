@@ -35,26 +35,9 @@ Currently only with VirtualBox provider.
 
 ## Usage
 
-Use the included `run.sh` script:
+Use the included `boxmgr` script, see built-in help
 
-```
-Usage: ./run.sh [subcommand] [target]
-
-Available subcommands:
-    test           Recereate and running test boxes
-    build          Build vagrant boxes
-    add            Removing previous, rebuilding & adding new boxes
-                   This deletes '.box' file after publish
-
-Available targets:
-    all            Select all boxes
-    precise        Select 'precise' x64 box
-    trusty         Select 'trusty' x64 box
-```
-
-After `./run.sh test all`, you have a `precise_test`, `trusty_test` machine up & running.  
-After `./run.sh build all`, you have a `precise.box`,`trusty.box` box files in `dist` directory.  
-After `./run.sh add all`, you have a `senki/precise`,`senki/trusty` boxes added to your vagrant environment. Check with `vagrant box list`
+After `boxmgr add [box]`, you have a `senki/[box]` added to your vagrant environment. Check with `vagrant box list`
 
 ## Pre-requirements on OS X
 
