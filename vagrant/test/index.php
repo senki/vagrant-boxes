@@ -72,6 +72,7 @@ $linfoVers   = "3.0.1";
 $isAdminer   = checkModules("adminer.php");
 $adminerVers = "4.2.5";
 $isInfo      = checkModules("info.php");
+$isBench     = checkModules("benchmark.php");
 
 ?>
 <!doctype html>
@@ -162,7 +163,9 @@ $isInfo      = checkModules("info.php");
     <div class="one-half column">
         <h2>PHP</h2>
         <div class="data">
-            <strong>Version:</strong> <?= phpversion() ?><?= ($isInfo) ? ' • <a href="info.php" target="_blank">phpinfo()</a>': '' ?>
+            <strong>Version:</strong> <?= phpversion() ?>
+            <?= ($isInfo) ? ' • <a href="info.php" target="_blank">phpinfo()</a>': '' ?>
+            <?= ($isBench) ? ' • <a href="benchmark.php" target="_blank">benchmark</a>': '' ?>
         </div>
         <h3>Enabled Extension:</h3>
         <div class="data">
