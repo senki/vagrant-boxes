@@ -47,31 +47,12 @@ do_prepare() {
     echo 'LC_ALL="en_US.UTF-8"' >> $LOCALE_CONFIG
     # ssh loce not accept from client
     sed -i "s/^AcceptEnv LANG LC_\*$/\# AcceptEnv LANG LC_\*/g" /etc/ssh/sshd_config
-    touch /var/provision/prepare
-}
-
-do_update() {
-    if [[ -f "/var/provision/update" ]] && [[ `stat --format=%Y /var/provision/update` -ge $(( `date +%s` - (60*60*24) )) ]]; then
-        echo "Skipping: System already updated within a day" | tee -a $PROVISION_LOG
-        return
-    fi
-    echo "Updating System..."  | tee -a $PROVISION_LOG
+    # keep apt packages
+    echo 'APT::Keep-Downloaded-Packages "true";' \
+    > /etc/apt/apt.conf.d/01keep-debs
+    # update apt sources
     apt-get -qy update >> $PROVISION_LOG 2>&1
-    apt-get -qy dist-upgrade >> $PROVISION_LOG 2>&1
-    apt-get -qy autoremove >> $PROVISION_LOG 2>&1
-    touch /var/provision/update
-}
-
-do_config_network() {
-    if [[ -f "/var/provision/config-network" ]]; then
-        echo "Skipping: Hostname already confugured" | tee -a $PROVISION_LOG
-        return
-    fi
-    echo "Configuring Hostname..."  | tee -a $PROVISION_LOG
-    IPADDR=$(/sbin/ifconfig eth1 | awk '/inet / { print $2 }' | sed 's/addr://')
-    sed -i "s/^${IPADDR}.*//" $HOST_CONFIG
-    echo ${IPADDR} ${HOST_NAME} >> $HOST_CONFIG           # Just to quiet down some error messages
-    touch /var/provision/config-network
+    touch /var/provision/prepare
 }
 
 do_install_lamp() {
@@ -148,11 +129,6 @@ main() {
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_prepare
     echo -n "==> " >> $PROVISION_LOG 2>&1
-    do_update
-    if [[ $TARGET == "test" ]]; then
-        echo -n "==> " >> $PROVISION_LOG 2>&1
-        do_config_network
-    fi
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_lamp
     echo -n "==> " >> $PROVISION_LOG 2>&1
