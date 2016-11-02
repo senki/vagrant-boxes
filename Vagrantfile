@@ -29,6 +29,9 @@ Vagrant.configure(2) do |config|
     precise.vm.synced_folder cache_dir, "/var/cache/apt/archives/"
     precise.vm.provider "virtualbox" do |v|
       v.name = precise.vm.hostname
+      # serial port
+      v.customize [ "modifyvm", :id, "--uart1", "0x3F8", "4" ]
+      v.customize [ "modifyvm", :id, "--uartmode1", "disconnected" ]
     end
   end
 
@@ -42,6 +45,9 @@ Vagrant.configure(2) do |config|
     trusty.vm.synced_folder cache_dir, "/var/cache/apt/archives/"
     trusty.vm.provider "virtualbox" do |v|
       v.name = trusty.vm.hostname
+      # serial port
+      v.customize [ "modifyvm", :id, "--uart1", "0x3F8", "4" ]
+      v.customize [ "modifyvm", :id, "--uartmode1", "disconnected" ]
       v.memory = 1024
     end
   end
@@ -63,6 +69,9 @@ Vagrant.configure(2) do |config|
         mount_options: ["dmode=775,fmode=664"]
     precise_test.vm.provider "virtualbox" do |v|
       v.name = precise_test.vm.hostname
+      # serial port
+      v.customize [ "modifyvm", :id, "--uart1", "0x3F8", "4" ]
+      v.customize [ "modifyvm", :id, "--uartmode1", "disconnected" ]
     end
   end
 
@@ -81,6 +90,9 @@ Vagrant.configure(2) do |config|
         mount_options: ["dmode=775,fmode=664"]
     trusty_test.vm.provider "virtualbox" do |v|
       v.name = trusty_test.vm.hostname
+      # serial port
+      v.customize [ "modifyvm", :id, "--uart1", "0x3F8", "4" ]
+      v.customize [ "modifyvm", :id, "--uartmode1", "disconnected" ]
       v.memory = 1024
     end
   end
