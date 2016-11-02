@@ -11,43 +11,58 @@
 set -e
 
 BASE_OS="trusty"
-HOST_NAME="senki-trusty.local"
+# shellcheck disable=SC2034
+RUBY_EXEC="ruby"
 
-do_install_os_specific() {
-    if [[ -f "/var/provision/install-${BASE_OS}-specific" ]]; then
-        echo "Skipping: ${BASE_OS} specific packages already installed"  | tee -a $PROVISION_LOG
+do_os_prepare() {
+    if [[ -f "/var/provision/${BASE_OS}-prepare" ]]; then
+        echo -e "Skipping: $BASE_OS Specific Environment already prepared" | tee -a $PROVISION_LOG
         return
     fi
-    echo "Installing ${BASE_OS} specific packages..."  | tee -a $PROVISION_LOG
-    debconf-set-selections <<< "mysql-server mysql-server/root_password password vagrant"
-    debconf-set-selections <<< "mysql-server mysql-server/root_password_again password vagrant"
-    apt-get -qy install mysql-server-5.6 php5 php5-curl php5-mcrypt php5-intl php5-xsl libmcrypt-dev mcrypt >> $PROVISION_LOG 2>&1
-    php5enmod mcrypt >> $PROVISION_LOG 2>&1
-    php5enmod curl >> $PROVISION_LOG 2>&1
-    php5enmod xsl >> $PROVISION_LOG 2>&1
-    php5enmod intl >> $PROVISION_LOG 2>&1
-    touch /var/provision/install-${BASE_OS}-specific
+    echo -e "Preparing $BASE_OS Specific Environment..." | tee -a $PROVISION_LOG
+    # empty
+    touch /var/provision/${BASE_OS}-prepare
+}
+
+do_install_os_specific() {
+    if [[ -f "/var/provision/${BASE_OS}-install" ]]; then
+        echo "Skipping: $BASE_OS specific packages already installed"  | tee -a "$PROVISION_LOG"
+        return
+    fi
+    echo "Installing $BASE_OS specific packages..." | tee -a "$PROVISION_LOG"
+    debconf-set-selections <<< "mysql-server mysql-server/root_password password $MYSQL_PASS"
+    debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $MYSQL_PASS"
+    {
+        apt-get -qy install mysql-server-5.6 php5 php5-curl php5-intl php5-mysqlnd php5-readline php5-xsl php5-mcrypt libmcrypt-dev mcrypt
+        php5enmod curl intl mysqlnd readline xsl mcrypt
+    } >> "$PROVISION_LOG" 2>&1
+    touch /var/provision/${BASE_OS}-install
 }
 
 do_config_os_specific() {
-    if [[ -f "/var/provision/config-${BASE_OS}-specific" ]]; then
-        echo "Skipping: ${BASE_OS} specific config already in place"  | tee -a $PROVISION_LOG
+    if [[ -f "/var/provision/${BASE_OS}-config" ]]; then
+        echo "Skipping: $BASE_OS specific config already in place"  | tee -a "$PROVISION_LOG"
         return
     fi
-    echo "Setting ${BASE_OS} specific configs..."  | tee -a $PROVISION_LOG
+    echo "Setting $BASE_OS specific configs..."  | tee -a "$PROVISION_LOG"
     # php.ini
-    mv /etc/php5/apache2/php.ini /etc/php5/apache2/php.ini.bak >> $PROVISION_LOG 2>&1
-    cp -s /usr/share/php5/php.ini-development /etc/php5/apache2/php.ini >> $PROVISION_LOG 2>&1
+    {
+        mv /etc/php5/apache2/php.ini /etc/php5/apache2/php.ini.bak
+        cp -s /usr/share/php5/php.ini-development /etc/php5/apache2/php.ini
+    } >> "$PROVISION_LOG" 2>&1
     # .htaccess
     sed -i "s/AllowOverride None/AllowOverride All/" /etc/apache2/apache2.conf
-    # .index.html
-    rm /var/www/html/index.html >> $PROVISION_LOG 2>&1
+    # index.html
+    if [ -f /var/www/html/index.html ]; then
+        rm /var/www/html/index.html >> "$PROVISION_LOG" 2>&1
+    fi
     # virtualbox shared folder
     sed -i "s/^\tDocumentRoot \/var\/www\/html$/&\n\tEnableSendfile Off/" /etc/apache2/sites-available/000-default.conf
-    service apache2 restart >> $PROVISION_LOG 2>&1
-    touch /var/provision/config-${BASE_OS}-specific
+    service apache2 restart >> "$PROVISION_LOG" 2>&1
+    touch /var/provision/${BASE_OS}-config
 }
 
+# shellcheck disable=SC1091
 source /vagrant/src/common.sh
 
 # Script start here
