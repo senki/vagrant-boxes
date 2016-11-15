@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Copyright (c) 2016 Csaba Maulis
+#
+# SEE LICENSE File
+
+set -e
+if [ $# -lt 1 ]; then
+    echo "Argument missing, specify Vagrant box"
+    exit
+fi
+
+vagrant ssh "$1" --command "tail -f /var/log/provision.log"
