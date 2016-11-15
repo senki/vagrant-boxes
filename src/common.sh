@@ -38,6 +38,7 @@ do_prepare() {
     sed -i "s/^mesg n$/tty -s \&\& mesg n/g" /root/.profile
     # set timezone
     echo "Australia/Perth" > /etc/timezone
+    ln -fs /usr/share/zoneinfo/Australia/Perth /etc/localtime
     dpkg-reconfigure -f noninteractive tzdata >> $PROVISION_LOG 2>&1
     # set locales
     export LANGUAGE="en_US.UTF-8"
@@ -134,8 +135,6 @@ main() {
     fi
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_prepare
-    echo -n "==> " >> $PROVISION_LOG 2>&1
-    do_os_prepare
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_lamp
     echo -n "==> " >> $PROVISION_LOG 2>&1

@@ -14,16 +14,6 @@ BASE_OS="precise"
 # shellcheck disable=SC2034
 RUBY_EXEC="ruby1.9.1"
 
-do_os_prepare() {
-    if [[ -f "/var/provision/${BASE_OS}-prepare" ]]; then
-        echo -e "Skipping: $BASE_OS Specific Environment already prepared" | tee -a $PROVISION_LOG
-        return
-    fi
-    echo -e "Preparing $BASE_OS Specific Environment..." | tee -a $PROVISION_LOG
-    # empty
-    touch /var/provision/${BASE_OS}-prepare
-}
-
 do_install_os_specific() {
     if [[ -f "/var/provision/${BASE_OS}-install" ]]; then
         echo "Skipping: $BASE_OS specific packages already installed"  | tee -a "$PROVISION_LOG"

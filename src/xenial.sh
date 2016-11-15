@@ -14,18 +14,6 @@ BASE_OS="xenial"
 # shellcheck disable=SC2034
 RUBY_EXEC="ruby"
 
-do_os_prepare() {
-    if [[ -f "/var/provision/${BASE_OS}-prepare" ]]; then
-        echo -e "Skipping: $BASE_OS Specific Environment already prepared" | tee -a $PROVISION_LOG
-        return
-    fi
-    echo -e "Preparing $BASE_OS Specific Environment..." | tee -a $PROVISION_LOG
-    # set timezone
-    ln -fs /usr/share/zoneinfo/Australia/Perth /etc/localtime
-    dpkg-reconfigure -f noninteractive tzdata >> $PROVISION_LOG 2>&1
-    touch /var/provision/${BASE_OS}-prepare
-}
-
 do_install_os_specific() {
     if [[ -f "/var/provision/${BASE_OS}-install" ]]; then
         echo "Skipping: $BASE_OS specific packages already installed"  | tee -a "$PROVISION_LOG"
