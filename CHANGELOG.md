@@ -1,5 +1,16 @@
+<a name=""></a>
+# [1.3.1](https://github.com/senki/vagrant-boxes/releases/tag/v1.3.1) (2016-11-15)
+
+
+### Features
+
+* **build:** Replace custom script with vagrant-vbguest plugin ([89b7ba7](https://github.com/senki/vagrant-boxes/commit/89b7ba7))
+* **build:** Introduce logtail script; fewer keystroke needed ([9c5c970](https://github.com/senki/vagrant-boxes/commit/9c5c970))
+
+
+
 <a name="1.3.0"></a>
-# [1.3.0](https://github.com/senki/vagrant-boxes/compare/v1.3.0...v) (2016-11-02)
+# [1.3.0](https://github.com/senki/vagrant-boxes/releases/tag/v1.3.0) (2016-11-02)
 
 
 ### Bug Fixes
