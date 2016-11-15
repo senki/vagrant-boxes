@@ -35,9 +35,12 @@ Only with VirtualBox provider.
 
 ## Usage
 
-Use the included `boxmgr` script, see built-in help
+Use the included `boxmgr` script, for arguments see built-in help.
+1. boxmgr build [boxname]
+2. boxmgr upgrade [boxname] # if you need to upgrade VirtualBox additions
+2. boxmgr add [boxname]
 
-After `boxmgr add [box]`, you have a `senki/[box]` added to your vagrant environment. Check with `vagrant box list`
+On the end, you have a `senki/[box]` added to your vagrant environment. Check with `vagrant box list`
 
 ## Pre-requirements on OS X
 
