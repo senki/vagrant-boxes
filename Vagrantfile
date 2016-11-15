@@ -54,6 +54,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.define "xenial" do |xenial|
     xenial.ssh.insert_key = false
+    xenial.vbguest.auto_update = false
     xenial.vm.box = "ubuntu/xenial64"
     xenial.vm.hostname = "senki-xenial.local"
     xenial.vm.provision "shell", path: "src/xenial.sh", args: ["prod"]
@@ -116,6 +117,7 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.define "xenial_test" do |xenial_test|
+    xenial_test.vbguest.auto_update = false
     xenial_test.vm.box = "ubuntu/xenial64"
     xenial_test.vm.hostname = "senki-xenial-test.local"
     xenial_test.vm.network "private_network", ip:"192.168.33.16"

@@ -13,7 +13,6 @@ set -e
 BASE_OS="xenial"
 # shellcheck disable=SC2034
 RUBY_EXEC="ruby"
-VBOX_GA_VERS="5.1.8"
 
 do_os_prepare() {
     if [[ -f "/var/provision/${BASE_OS}-prepare" ]]; then
@@ -24,8 +23,6 @@ do_os_prepare() {
     # set timezone
     ln -fs /usr/share/zoneinfo/Australia/Perth /etc/localtime
     dpkg-reconfigure -f noninteractive tzdata >> $PROVISION_LOG 2>&1
-    # update vbox_ga
-    /vagrant/src/update-vbox-ga.sh $VBOX_GA_VERS >> $PROVISION_LOG 2>&1
     touch /var/provision/${BASE_OS}-prepare
 }
 
