@@ -52,6 +52,7 @@ do_prepare() {
     > /etc/apt/apt.conf.d/01keep-debs
     # update apt sources
     apt-get -qy update >> $PROVISION_LOG 2>&1
+    touch /var/provision/update
     touch /var/provision/prepare
 }
 
