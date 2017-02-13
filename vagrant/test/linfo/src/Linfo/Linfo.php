@@ -56,7 +56,7 @@ class Linfo
         $this->linfo_localdir = dirname(dirname(__DIR__)).'/';
 
         // Get our version from git setattribs
-        $scm = '2016-08-24 20:19:33 -0700';
+        $scm = '$Format:%ci$';
         list($this->version) = strpos($scm, '$') !== false ? array('git') : explode(' ', $scm);
 
         // Run through dependencies / sanity checking
@@ -87,7 +87,17 @@ class Linfo
         $distro_class = '\\Linfo\\OS\\'.$os;
         $this->parser = new $distro_class($this->settings);
     }
-
+    
+    // Forward missing method request to the parser
+    public function __call ($name, $args)
+    {
+        if (method_exists($this->parser, $name) && is_callable (array($this->parser, $name))) {
+			
+           return call_user_func(array($this->parser,$name), $args);
+			
+        }
+    }
+            
     // Load everything, while obeying permissions...
     public function scan()
     {

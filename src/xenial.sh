@@ -33,19 +33,21 @@ do_config_os_specific() {
         return
     fi
     echo "Setting $BASE_OS specific configs..."  | tee -a "$PROVISION_LOG"
+    # vagrant user
+    {
+        useradd -m -p satrF5fwANvrQ -s /bin/bash vagrant
+        echo "vagrant ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/90-cloud-init-users
+        mkdir /home/vagrant/.ssh
+        cp /vagrant/src/vagrant.pub /home/vagrant/.ssh/authorized_keys
+        chown -R vagrant:vagrant /home/vagrant/.ssh
+        chmod 700 /home/vagrant/.ssh
+        chmod 600 /home/vagrant/.ssh/authorized_keys
+    } >> "$PROVISION_LOG" 2>&1
     # php.ini
     {
         mv /etc/php/7.0/apache2/php.ini /etc/php/7.0/apache2/php.ini.bak
         cp -s /usr/lib/php/7.0/php.ini-development /etc/php/7.0/apache2/php.ini
     } >> "$PROVISION_LOG" 2>&1
-    # .htaccess
-    sed -i "s/AllowOverride None/AllowOverride All/" /etc/apache2/apache2.conf
-    # index.html
-    if [ -f /var/www/html/index.html ]; then
-        rm /var/www/html/index.html >> "$PROVISION_LOG" 2>&1
-    fi
-    # virtualbox shared folder
-    sed -i "s/^\tDocumentRoot \/var\/www\/html$/&\n\tEnableSendfile Off/" /etc/apache2/sites-available/000-default.conf
     service apache2 restart >> "$PROVISION_LOG" 2>&1
     touch /var/provision/${BASE_OS}-config
 }

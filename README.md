@@ -19,35 +19,32 @@ Only with VirtualBox provider.
 
 ## Boxes
 
-1. **senki/precise**
-  - Ubuntu Precise x64 (12.04.5 LTS)
-  - Apache 2.2.22
-  - MySQL 5.5.53
-  - PHP  5.4.45
-  - Adminer 4.2.5
-2. **senki/trusty**
+1. **senki/trusty**
   - Ubuntu Trusty x64 (14.04.5 LTS)
   - Apache 2.4.7
   - MySQL 5.6.33
   - PHP 5.5.9
   - Adminer 4.2.5
-3. **senki/xenial**
+2. **senki/xenial**
   - Ubuntu Trusty x64 (14.04.1 LTS)
   - Apache 2.4.18
   - MySQL 5.7.16
   - PHP 7.0.8
   - Adminer 4.2.5
 
+### Test boxes
+
+You can test newly created boxes via `boxmgr build [boxname]_test`. It's building and open in a browser.
+
 ## Usage
 
-Use the included `boxmgr` script, for arguments see built-in help.
+Use the included `boxmgr` script, for all arguments see built-in help.
 
 1. boxmgr build [boxname]
-2. boxmgr update-vbox [boxname] # if you need to upgrade VBoxGuestAdditions
-2. boxmgr upgrade [boxname] # optional
-2. boxmgr add [boxname]
+2. boxmgr update-vbox [boxname] # if you need to upgrade VBoxGuestAdditions manually
+3. boxmgr add [boxname]
 
-On the end, you have a `senki/[box]` added to your vagrant environment. Check with `vagrant box list`
+On end, you have a `senki/[box]` added to your Vagrant environment. Check with `vagrant box list`.
 
 ## Pre-requirements on OS X
 

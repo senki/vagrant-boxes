@@ -68,7 +68,6 @@ $mysqlClientinfo = $mysqli->client_info;
 $mysqli->close();
 
 $isLinfo     = checkModules("linfo/");
-$linfoVers   = "3.0.1";
 $isAdminer   = checkModules("adminer.php");
 $adminerVers = "4.2.5";
 $isInfo      = checkModules("info.php");
@@ -132,7 +131,7 @@ $isBench     = checkModules("benchmark.php");
         <strong><?= $key ?>:</strong> <?= $value ?><br>
         <?php endforeach ?>
         <?php if ($isLinfo) : ?>
-            <strong>Linfo:</strong> <?= $linfoVers ?> • <a href="linfo/" target="_blank">Open</a>
+            <strong>Linfo</strong> • <a href="linfo/" target="_blank">Open</a>
         <?php endif; ?>
     </div>
     </div>
