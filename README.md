@@ -37,9 +37,8 @@ Only with VirtualBox provider.
 Use the included `boxmgr` script, for all arguments see built-in help.
 
 1. boxmgr build [boxname]
-2. boxmgr update-vbox [boxname] # if you need to upgrade VBoxGuestAdditions
-2. boxmgr upgrade [boxname] # optional
-2. boxmgr add [boxname]
+2. boxmgr update-vbox [boxname] # if you need to upgrade VBoxGuestAdditions manually
+3. boxmgr add [boxname]
 
 On end, you have a `senki/[box]` added to your Vagrant environment. Check with `vagrant box list`.
 
