@@ -58,12 +58,11 @@ Vagrant.configure(2) do |config|
   # test
 
   config.vm.define "trusty_test" do |trusty_test|
-    trusty_test.vm.box = "ubuntu/trusty64"
     trusty_test.vbguest.auto_update = true
+    trusty_test.vm.box = "senki/trusty"
     trusty_test.vm.hostname = "senki-trusty-test.local"
     trusty_test.vm.network "private_network", ip:"192.168.33.15"
     trusty_test.vm.provision "shell", path: "src/trusty.sh", args: ["test"]
-    trusty_test.vm.provision "reload"
     cache_dir = local_cache(trusty_test.vm.box)
     trusty_test.vm.synced_folder cache_dir, "/var/cache/apt/archives/"
     trusty_test.vm.synced_folder "vagrant/test", "/var/www/html",
@@ -81,11 +80,10 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.define "xenial_test" do |xenial_test|
-    xenial_test.vm.box = "ubuntu/xenial64"
+    xenial_test.vm.box = "senki/xenial"
     xenial_test.vm.hostname = "senki-xenial-test.local"
     xenial_test.vm.network "private_network", ip:"192.168.33.16"
     xenial_test.vm.provision "shell", path: "src/xenial.sh", args: ["test"]
-    xenial_test.vm.provision "reload"
     cache_dir = local_cache(xenial_test.vm.box)
     xenial_test.vm.synced_folder cache_dir, "/var/cache/apt/archives/"
     xenial_test.vm.synced_folder "vagrant/test", "/var/www/html",

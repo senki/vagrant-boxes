@@ -32,6 +32,10 @@ Only with VirtualBox provider.
   - PHP 7.0.8
   - Adminer 4.2.5
 
+### Test boxes
+
+You can test newly created boxes via `boxmgr build [boxname]_test`. It's building and open in a browser.
+
 ## Usage
 
 Use the included `boxmgr` script, for all arguments see built-in help.
