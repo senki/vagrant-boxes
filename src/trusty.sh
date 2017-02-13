@@ -40,14 +40,6 @@ do_config_os_specific() {
         mv /etc/php5/apache2/php.ini /etc/php5/apache2/php.ini.bak
         cp -s /usr/share/php5/php.ini-development /etc/php5/apache2/php.ini
     } >> "$PROVISION_LOG" 2>&1
-    # .htaccess
-    sed -i "s/AllowOverride None/AllowOverride All/" /etc/apache2/apache2.conf
-    # index.html
-    if [ -f /var/www/html/index.html ]; then
-        rm /var/www/html/index.html >> "$PROVISION_LOG" 2>&1
-    fi
-    # virtualbox shared folder
-    sed -i "s/^\tDocumentRoot \/var\/www\/html$/&\n\tEnableSendfile Off/" /etc/apache2/sites-available/000-default.conf
     service apache2 restart >> "$PROVISION_LOG" 2>&1
     touch /var/provision/${BASE_OS}-config
 }

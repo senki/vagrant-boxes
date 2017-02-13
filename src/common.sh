@@ -71,6 +71,14 @@ do_install_lamp() {
         service apache2 restart
     }  >> $PROVISION_LOG 2>&1
     sed -i "s/^\#general_log/general_log/g" /etc/mysql/my.cnf
+    # .htaccess
+    sed -i "s/AllowOverride None/AllowOverride All/" /etc/apache2/apache2.conf
+    # index.html
+    if [ -f /var/www/html/index.html ]; then
+        rm /var/www/html/index.html >> "$PROVISION_LOG" 2>&1
+    fi
+    # virtualbox shared folder
+    sed -i "s/^\tDocumentRoot \/var\/www\/html$/&\n\tEnableSendfile Off/" /etc/apache2/sites-available/000-default.conf
     touch /var/provision/install-lamp
 }
 

@@ -98,17 +98,15 @@ do_help() {
     echo ""
     echo "Commands:"
     echo "    build          Build & test a box"
-    echo "    test           Testing already built boxes (use on *_test box only)"
+    echo "    test           Testing already built boxes"
     echo "    add            Removing previously added & re-publish box"
-    echo "                   This deletes '.box' file after publish"
+    echo "                   This deletes 'dist/*.box' file after publish"
     echo "    open           Open box URL in browser"
     echo "                   Use only in *_test boxes"
     echo "    update         System Update on a box"
     echo "    update-vbox    Update VirtualBox Additions on a box"
     echo ""
     echo "Available targets:"
-    echo "    precise"
-    echo "    precise_test"
     echo "    trusty"
     echo "    trusty_test"
     echo "    xenial"
@@ -131,7 +129,7 @@ case $1 in
     build|test|add|update-vbox|update|open)
     PROCESS="$1"
     case $2 in
-        precise|precise_test|trusty|trusty_test|xenial|xenial_test)
+        trusty|trusty_test|xenial|xenial_test)
             BOX_NAME="$2"
             do_"$PROCESS"
             ;;

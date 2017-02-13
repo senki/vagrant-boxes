@@ -19,22 +19,6 @@ Vagrant.configure(2) do |config|
 
   # build
 
-  config.vm.define "precise" do |precise|
-    precise.ssh.insert_key = false
-    precise.vm.box = "ubuntu/precise64"
-    precise.vm.hostname = "senki-precise.local"
-    precise.vm.provision "shell", path: "src/precise.sh", args: ["prod"]
-    precise.vm.provision "reload"
-    cache_dir = local_cache(precise.vm.box)
-    precise.vm.synced_folder cache_dir, "/var/cache/apt/archives/"
-    precise.vm.provider "virtualbox" do |v|
-      v.name = precise.vm.hostname
-      # serial port
-      v.customize [ "modifyvm", :id, "--uart1", "0x3F8", "4" ]
-      v.customize [ "modifyvm", :id, "--uartmode1", "disconnected" ]
-    end
-  end
-
   config.vm.define "trusty" do |trusty|
     trusty.ssh.insert_key = false
     trusty.vm.box = "ubuntu/trusty64"
@@ -72,27 +56,6 @@ Vagrant.configure(2) do |config|
   end
 
   # test
-
-  config.vm.define "precise_test" do |precise_test|
-    precise_test.vm.box = "ubuntu/precise64"
-    precise_test.vm.hostname = "senki-precise-test.local"
-    precise_test.vm.network "private_network", ip:"192.168.33.14"
-    precise_test.vm.provision "shell", path: "src/precise.sh", args: ["test"]
-    precise_test.vm.provision "reload"
-    cache_dir = local_cache(precise_test.vm.box)
-    precise_test.vm.synced_folder cache_dir, "/var/cache/apt/archives/"
-    precise_test.vm.synced_folder "vagrant/test", "/var/www",
-        id: "www-data",
-        owner: "www-data",
-        group: "www-data",
-        mount_options: ["dmode=775,fmode=664"]
-    precise_test.vm.provider "virtualbox" do |v|
-      v.name = precise_test.vm.hostname
-      # serial port
-      v.customize [ "modifyvm", :id, "--uart1", "0x3F8", "4" ]
-      v.customize [ "modifyvm", :id, "--uartmode1", "disconnected" ]
-    end
-  end
 
   config.vm.define "trusty_test" do |trusty_test|
     trusty_test.vm.box = "ubuntu/trusty64"
