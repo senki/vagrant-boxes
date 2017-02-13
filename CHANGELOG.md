@@ -1,4 +1,30 @@
 <a name=""></a>
+# [](https://github.com/senki/vagrant-boxes/compare/v1.4.1) (2017-02-13)
+
+
+### Bug Fixes
+
+* Missing update check file ([ce7c0de](https://github.com/senki/vagrant-boxes/commit/ce7c0de))
+
+
+### Code Refactoring
+
+* Linfo is now from git repo ([ec7e337](https://github.com/senki/vagrant-boxes/commit/ec7e337))
+* Added back linfo config file ([35e580b](https://github.com/senki/vagrant-boxes/commit/35e580b))
+* Merge from [jrgp/linfo](https://github.com/jrgp/linfo) [1498290](https://github.com/jrgp/linfo/commit/1498290) to 'vagrant/test/linfo' ([5c48f12](https://github.com/senki/vagrant-boxes/commit/5c48f12))
+* Delete linfo files ([0a4cbe7](https://github.com/senki/vagrant-boxes/commit/0a4cbe7))
+
+
+### Features
+
+* Add vagrant user, insert Vagrant insecure certificate ([e69d24c](https://github.com/senki/vagrant-boxes/commit/e69d24c))
+* Reconsider VBoxGuestAdditions updates ([487aab4](https://github.com/senki/vagrant-boxes/commit/487aab4))
+* Remove Ubuntu Precise support. No longer feasible ([27b6408](https://github.com/senki/vagrant-boxes/commit/27b6408))
+* Test the newly created boxes ([6ed62a9](https://github.com/senki/vagrant-boxes/commit/6ed62a9))
+
+
+
+<a name=""></a>
 # [1.3.1](https://github.com/senki/vagrant-boxes/releases/tag/v1.3.1) (2016-11-15)
 
 
