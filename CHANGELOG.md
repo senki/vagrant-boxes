@@ -1,5 +1,16 @@
-<a name=""></a>
-# [](https://github.com/senki/vagrant-boxes/compare/v1.4.1) (2017-02-13)
+<a name="1.4.1"></a>
+# [1.4.1](https://github.com/senki/vagrant-boxes/compare/v1.4.0...v) (2017-03-23)
+
+
+### Features
+
+* remove 'mysqlbackuphandler.sh', no more feasible ([75564fb](https://github.com/senki/vagrant-boxes/commit/75564fb))
+* Remove 'vagrant-vbguest' dependency ([79630f8](https://github.com/senki/vagrant-boxes/commit/79630f8))
+* Replace official Ubntu bux with boxcutter variant ([8380565](https://github.com/senki/vagrant-boxes/commit/8380565))
+* Add vagrant user, insert Vagrant insecure certificate ([e69d24c](https://github.com/senki/vagrant-boxes/commit/e69d24c))
+* Reconsider VBoxGuestAdditions updates ([487aab4](https://github.com/senki/vagrant-boxes/commit/487aab4))
+* Remove Ubuntu Precise support. No longer feasible ([27b6408](https://github.com/senki/vagrant-boxes/commit/27b6408))
+* Test the newly created boxes ([6ed62a9](https://github.com/senki/vagrant-boxes/commit/6ed62a9))
 
 
 ### Bug Fixes
@@ -15,16 +26,7 @@
 * Delete linfo files ([0a4cbe7](https://github.com/senki/vagrant-boxes/commit/0a4cbe7))
 
 
-### Features
-
-* Add vagrant user, insert Vagrant insecure certificate ([e69d24c](https://github.com/senki/vagrant-boxes/commit/e69d24c))
-* Reconsider VBoxGuestAdditions updates ([487aab4](https://github.com/senki/vagrant-boxes/commit/487aab4))
-* Remove Ubuntu Precise support. No longer feasible ([27b6408](https://github.com/senki/vagrant-boxes/commit/27b6408))
-* Test the newly created boxes ([6ed62a9](https://github.com/senki/vagrant-boxes/commit/6ed62a9))
-
-
-
-<a name=""></a>
+<a name="1.3.1"></a>
 # [1.3.1](https://github.com/senki/vagrant-boxes/releases/tag/v1.3.1) (2016-11-15)
 
 
