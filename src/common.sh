@@ -79,22 +79,8 @@ do_install_lamp() {
     fi
     # virtualbox shared folder
     sed -i "s/^\tDocumentRoot \/var\/www\/html$/&\n\tEnableSendfile Off/" /etc/apache2/sites-available/000-default.conf
-    touch /var/provision/install-lamp
-}
 
-do_config_mysqlbackuphandler() {
-    if [[ -f "/var/provision/mysqlbackuphandler-config" ]]; then
-        echo "Skipping: MySQL Data backup/restore handler already configured" | tee -a $PROVISION_LOG
-        return
-    fi
-    echo "Setting up MySQL Data backup/restore handler..." | tee -a $PROVISION_LOG
-    cp /vagrant/src/mysqlbackuphandler.sh /etc/init.d/mysqlbackuphandler.sh
-    chmod +x /etc/init.d/mysqlbackuphandler.sh
-    {
-        update-rc.d mysqlbackuphandler.sh defaults
-        /etc/init.d/mysqlbackuphandler.sh backup
-    } >> $PROVISION_LOG 2>&1
-    touch /var/provision/mysqlbackuphandler-config
+    touch /var/provision/install-lamp
 }
 
 do_install_utilities() {
@@ -150,8 +136,6 @@ main() {
     do_install_os_specific
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_config_os_specific
-    echo -n "==> " >> $PROVISION_LOG 2>&1
-    do_config_mysqlbackuphandler
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_utilities
     echo -n "==> " >> $PROVISION_LOG 2>&1
