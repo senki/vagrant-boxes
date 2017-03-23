@@ -18,7 +18,7 @@ do_build() {
     if [[ $BOX_NAME == *"test"* ]]; then
         BASE_NAME=${BOX_NAME/_test/}
         LOCAL_VERSION=$(cat src/"$BASE_NAME".json | ruby -rjson -e 'j = JSON.parse(STDIN.read); puts j["versions"][0]["version"]')
-        BOX_VERSION=$(vagrant box list | grep senki/"$BASE_NAME" | sed "s/senki\/$BASE_NAME    (virtualbox, //g ; s/)//g")
+        BOX_VERSION=$(vagrant box list | grep senki/"$BASE_NAME" | sed "s/senki\/$BASE_NAME         (virtualbox, //g ; s/)//g")
         if [[ "$LOCAL_VERSION" != "$BOX_VERSION" ]]; then
             echo "Make sure the correct version is exported."
             echo "    '$BOX_NAME' box uses '$BASE_NAME' box as base."
@@ -97,12 +97,6 @@ do_update() {
     vagrant reload "$BOX_NAME"
 }
 
-do_update-vbox() {
-    vagrant vbguest "$BOX_NAME"
-    vagrant ssh "$BOX_NAME" --command "sudo apt-get -y autoremove"
-    vagrant reload "$BOX_NAME"
-}
-
 do_help() {
     echo "Argument missing or invalid!"
     echo ""
@@ -116,7 +110,6 @@ do_help() {
     echo "    open           Open box URL in browser"
     echo "                   Use only in *_test boxes"
     echo "    update         System Update on a box"
-    echo "    update-vbox    Update VirtualBox Additions on a box"
     echo ""
     echo "Available targets:"
     echo "    trusty"
@@ -138,7 +131,7 @@ fi
 find ./vagrant/db -type f \( ! -iname "*.gitignore" \) -delete
 
 case $1 in
-    build|test|add|update-vbox|update|open)
+    build|test|add|update|open)
     PROCESS="$1"
     case $2 in
         trusty|trusty_test|xenial|xenial_test)

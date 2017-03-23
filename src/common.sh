@@ -34,25 +34,20 @@ do_prepare() {
         return
     fi
     echo -e "Preparing Environment..." | tee -a $PROVISION_LOG
-    # remove tty warning
-    sed -i "s/^mesg n$/tty -s \&\& mesg n/g" /root/.profile
+
     # set timezone
     echo "Australia/Perth" > /etc/timezone
     ln -fs /usr/share/zoneinfo/Australia/Perth /etc/localtime
     dpkg-reconfigure -f noninteractive tzdata >> $PROVISION_LOG 2>&1
-    # set locales
-    export LANGUAGE="en_US.UTF-8"
-    export LC_ALL="en_US.UTF-8"
-    echo 'LANGUAGE="en_US.UTF-8"' >> $LOCALE_CONFIG
-    echo 'LC_ALL="en_US.UTF-8"' >> $LOCALE_CONFIG
-    # ssh loce not accept from client
-    sed -i "s/^AcceptEnv LANG LC_\*$/\# AcceptEnv LANG LC_\*/g" /etc/ssh/sshd_config
+
     # keep apt packages
     echo 'APT::Keep-Downloaded-Packages "true";' \
     > /etc/apt/apt.conf.d/01keep-debs
+
     # update apt sources
     apt-get -qy update >> $PROVISION_LOG 2>&1
     touch /var/provision/update
+
     touch /var/provision/prepare
 }
 
@@ -63,6 +58,8 @@ do_install_lamp() {
     fi
     export DEBIAN_FRONTEND=noninteractive
     echo "Installing LAMP Stack..."  | tee -a $PROVISION_LOG
+
+    # LAMP
     debconf-set-selections <<< "mysql-server mysql-server/root_password password $MYSQL_PASS"
     debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $MYSQL_PASS"
     {
@@ -71,30 +68,19 @@ do_install_lamp() {
         service apache2 restart
     }  >> $PROVISION_LOG 2>&1
     sed -i "s/^\#general_log/general_log/g" /etc/mysql/my.cnf
+
     # .htaccess
     sed -i "s/AllowOverride None/AllowOverride All/" /etc/apache2/apache2.conf
-    # index.html
+
+    # delete index.html
     if [ -f /var/www/html/index.html ]; then
         rm /var/www/html/index.html >> "$PROVISION_LOG" 2>&1
     fi
+
     # virtualbox shared folder
     sed -i "s/^\tDocumentRoot \/var\/www\/html$/&\n\tEnableSendfile Off/" /etc/apache2/sites-available/000-default.conf
-    touch /var/provision/install-lamp
-}
 
-do_config_mysqlbackuphandler() {
-    if [[ -f "/var/provision/mysqlbackuphandler-config" ]]; then
-        echo "Skipping: MySQL Data backup/restore handler already configured" | tee -a $PROVISION_LOG
-        return
-    fi
-    echo "Setting up MySQL Data backup/restore handler..." | tee -a $PROVISION_LOG
-    cp /vagrant/src/mysqlbackuphandler.sh /etc/init.d/mysqlbackuphandler.sh
-    chmod +x /etc/init.d/mysqlbackuphandler.sh
-    {
-        update-rc.d mysqlbackuphandler.sh defaults
-        /etc/init.d/mysqlbackuphandler.sh backup
-    } >> $PROVISION_LOG 2>&1
-    touch /var/provision/mysqlbackuphandler-config
+    touch /var/provision/install-lamp
 }
 
 do_install_utilities() {
@@ -103,8 +89,10 @@ do_install_utilities() {
         return
     fi
     echo "Installing utility softwares..." | tee -a $PROVISION_LOG
+
     # htop, tree
     apt-get -qy install htop tree >> $PROVISION_LOG 2>&1
+
     # multitail
     {
         apt-get -qy install libncursesw5-dev
@@ -116,8 +104,14 @@ do_install_utilities() {
     rm -rf multitail-6.4.2
     cp /etc/multitail.conf.new $MULTITAIL_CONFIG
     sed -i "s/^xclip:\/usr\/bin\/xclip$/\# xclip:\/usr\/bin\/xclip/g" $MULTITAIL_CONFIG
+
+    # dman (becuase boxcutter/ubuntu deleted man pages (Do'h)
+    apt-get -qy install bikeshed --no-install-recommends >> $PROVISION_LOG 2>&1
+    cat /vagrant/src/.profile >> /home/vagrant/.profile
+
     # update locate db
     updatedb >> $PROVISION_LOG 2>&1
+
     touch /var/provision/install-utilities
 }
 
@@ -131,7 +125,6 @@ do_save_version() {
     echo "Saving version info (v$BOX_VERSION) to file..." | tee -a $PROVISION_LOG
     BOX_NAME=$(cat /vagrant/src/"$BASE_OS".json | $RUBY_EXEC -rjson -e 'j = JSON.parse(STDIN.read); puts j["name"]')
     echo "$BOX_NAME v$BOX_VERSION" > /var/provision/version
-
 }
 
 main() {
@@ -150,8 +143,6 @@ main() {
     do_install_os_specific
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_config_os_specific
-    echo -n "==> " >> $PROVISION_LOG 2>&1
-    do_config_mysqlbackuphandler
     echo -n "==> " >> $PROVISION_LOG 2>&1
     do_install_utilities
     echo -n "==> " >> $PROVISION_LOG 2>&1

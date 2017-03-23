@@ -1,0 +1,2 @@
+
+alias man=dman

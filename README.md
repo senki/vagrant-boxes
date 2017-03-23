@@ -1,5 +1,9 @@
 # vagrant-boxes
 
+# THIS REPO IS DEPRECATED!
+
+> I leave this in favour of [Laravel Homestead](https://github.com/laravel/homestead)
+
 Create Basic Ubuntu LAMP Vagrant boxes.  
 Only with VirtualBox provider.
 
@@ -52,7 +56,6 @@ On end, you have a `senki/[box]` added to your Vagrant environment. Check with `
   - [VirtualBox](https://www.virtualbox.org)
   - [Vagrant](https://www.vagrantup.com)
   - [vagrant-reload](https://github.com/aidanns/vagrant-reload)
-  - [vagrant-vbguest](https://github.com/dotless-de/vagrant-vbguest)
 
 ## Install
 
@@ -61,4 +64,4 @@ $ git clone --depth=1 https://github.com/senki/vagrant-boxes.git
 ```
 ## Copyright and license
 
-Code and documentation Copyright 2015 Csaba Maulis. Released under [the MIT license](LICENSE).
+Code and Documentation Copyright (c) 2015-2017 Csaba Maulis. Released under [the MIT license](LICENSE).
