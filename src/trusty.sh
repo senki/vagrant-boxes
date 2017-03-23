@@ -20,12 +20,14 @@ do_install_os_specific() {
         return
     fi
     echo "Installing $BASE_OS specific packages..." | tee -a "$PROVISION_LOG"
+
     debconf-set-selections <<< "mysql-server mysql-server/root_password password $MYSQL_PASS"
     debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $MYSQL_PASS"
     {
         apt-get -qy install mysql-server-5.6 php5 php5-curl php5-intl php5-mysqlnd php5-readline php5-xsl php5-mcrypt libmcrypt-dev mcrypt
         php5enmod curl intl mysqlnd readline xsl mcrypt
     } >> "$PROVISION_LOG" 2>&1
+
     touch /var/provision/${BASE_OS}-install
 }
 
@@ -35,12 +37,14 @@ do_config_os_specific() {
         return
     fi
     echo "Setting $BASE_OS specific configs..."  | tee -a "$PROVISION_LOG"
+
     # php.ini
     {
         mv /etc/php5/apache2/php.ini /etc/php5/apache2/php.ini.bak
         cp -s /usr/share/php5/php.ini-development /etc/php5/apache2/php.ini
     } >> "$PROVISION_LOG" 2>&1
     service apache2 restart >> "$PROVISION_LOG" 2>&1
+
     touch /var/provision/${BASE_OS}-config
 }
 

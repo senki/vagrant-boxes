@@ -20,10 +20,12 @@ do_install_os_specific() {
         return
     fi
     echo "Installing $BASE_OS specific packages..." | tee -a "$PROVISION_LOG"
+
     {
         apt-get -qy install make gcc ruby php-bcmath php-bz2 php-curl php-mbstring php-zip
         phpenmod bcmath bz2 curl mbstring zip
     } >> "$PROVISION_LOG" 2>&1
+
     touch /var/provision/${BASE_OS}-install
 }
 
@@ -33,22 +35,14 @@ do_config_os_specific() {
         return
     fi
     echo "Setting $BASE_OS specific configs..."  | tee -a "$PROVISION_LOG"
-    # vagrant user
-    {
-        useradd -m -p satrF5fwANvrQ -s /bin/bash vagrant
-        echo "vagrant ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/90-cloud-init-users
-        mkdir /home/vagrant/.ssh
-        cp /vagrant/src/vagrant.pub /home/vagrant/.ssh/authorized_keys
-        chown -R vagrant:vagrant /home/vagrant/.ssh
-        chmod 700 /home/vagrant/.ssh
-        chmod 600 /home/vagrant/.ssh/authorized_keys
-    } >> "$PROVISION_LOG" 2>&1
+
     # php.ini
     {
         mv /etc/php/7.0/apache2/php.ini /etc/php/7.0/apache2/php.ini.bak
         cp -s /usr/lib/php/7.0/php.ini-development /etc/php/7.0/apache2/php.ini
     } >> "$PROVISION_LOG" 2>&1
     service apache2 restart >> "$PROVISION_LOG" 2>&1
+
     touch /var/provision/${BASE_OS}-config
 }
 
