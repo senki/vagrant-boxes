@@ -52,7 +52,6 @@ On end, you have a `senki/[box]` added to your Vagrant environment. Check with `
   - [VirtualBox](https://www.virtualbox.org)
   - [Vagrant](https://www.vagrantup.com)
   - [vagrant-reload](https://github.com/aidanns/vagrant-reload)
-  - [vagrant-vbguest](https://github.com/dotless-de/vagrant-vbguest)
 
 ## Install
 

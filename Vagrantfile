@@ -21,7 +21,6 @@ Vagrant.configure(2) do |config|
 
   config.vm.define "trusty" do |trusty|
     trusty.ssh.insert_key = false
-    trusty.vbguest.auto_update = true
     trusty.vm.box = "ubuntu/trusty64"
     trusty.vm.hostname = "senki-trusty.local"
     trusty.vm.provision "shell", path: "src/trusty.sh", args: ["prod"]
@@ -58,7 +57,6 @@ Vagrant.configure(2) do |config|
   # test
 
   config.vm.define "trusty_test" do |trusty_test|
-    trusty_test.vbguest.auto_update = true
     trusty_test.vm.box = "senki/trusty"
     trusty_test.vm.hostname = "senki-trusty-test.local"
     trusty_test.vm.network "private_network", ip:"192.168.33.15"
